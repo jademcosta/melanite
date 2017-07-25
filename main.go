@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -18,12 +19,16 @@ func GetApp() http.Handler {
 }
 
 func FetcherFunc(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	filename := p.ByName("file")
+	filename := removePrefixSlash(p.ByName("file"))
 
-	if filename == "/" {
-		http.Error(rw, "No", http.StatusBadRequest)
+	if filename == "" {
+		http.Error(rw, "No image url provided", http.StatusBadRequest)
 		return
 	}
 
 	fmt.Fprintln(rw, fmt.Sprintf("Hello %s", filename))
+}
+
+func removePrefixSlash(s string) string {
+	return strings.TrimPrefix(s, "/")
 }

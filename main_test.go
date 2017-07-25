@@ -48,7 +48,7 @@ func TestSimple(t *testing.T) {
 
 	oi := []httprouter.Param{httprouter.Param{Key: "file", Value: "jade"}}
 
-	TempFunc(response, req, oi)
+	FetcherFunc(response, req, oi)
 
 	assert.Equal(t, response.Body.String(), "Hello jade\n", "they should be equal")
 }
@@ -69,5 +69,24 @@ func TestFromOutside(t *testing.T) {
 	}
 
 	assert.Equal(t, 200, res.StatusCode, "status code should be 200")
-	assert.Equal(t, string(greeting), "Hello /jade\n", "they should be equal")
+	assert.Equal(t, string(greeting), "Hello jade\n", "they should be equal")
+}
+
+func TestNoUrlReturnsBadRequest(t *testing.T) {
+	ts := httptest.NewServer(GetApp())
+	defer ts.Close()
+
+	res, err := http.Get(fmt.Sprintf("%s/%s", ts.URL, ""))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	body, err := ioutil.ReadAll(res.Body)
+	res.Body.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	assert.Equal(t, 400, res.StatusCode, "status code should be 400")
+	assert.Equal(t, string(body), "No image url provided\n", "they should be equal")
 }
