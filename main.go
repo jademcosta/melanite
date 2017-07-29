@@ -22,7 +22,7 @@ func GetApp() http.Handler {
 func FetcherFunc(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	url := removePrefixSlash(p.ByName("fileUri"))
 
-	if !isValid(url) {
+	if isEmpty(url) {
 		http.Error(rw, "Invalid image url provided", http.StatusBadRequest)
 		return
 	}
@@ -77,11 +77,11 @@ func getImage(url *string) (*http.Response, error) {
 	return http.Get(*url)
 }
 
-func isValid(s string) bool {
+func isEmpty(s string) bool {
 	if s == "" {
-		return false
+		return true
 	}
-	return true
+	return false
 }
 
 func removePrefixSlash(s string) string {
