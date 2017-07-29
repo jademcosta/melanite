@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/julienschmidt/httprouter"
@@ -42,18 +43,19 @@ func FetcherFunc(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
 	imgAsBytes, err := decodeImageFromBody(&response.Body)
 	if err != nil {
-		http.Error(rw, "", http.StatusInternalServerError)
+		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	format := response.Header.Get("Content-type")
+	format := response.Header.Get("Content-Type")
 
 	if len(format) == 0 {
-		http.Error(rw, "Content-type not defined by upstream server", http.StatusInternalServerError)
+		http.Error(rw, "Content-Type not defined by upstream server", http.StatusInternalServerError)
 		return
 	}
 
-	rw.Header().Add("Content-type", format)
+	rw.Header().Add("Content-Length", strconv.Itoa(len(*imgAsBytes)))
+	rw.Header().Add("Content-Type", format)
 	rw.Write(*imgAsBytes)
 }
 

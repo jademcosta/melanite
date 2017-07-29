@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -60,13 +61,17 @@ func (suite *FakeExternalServerTestSuite) TestAnswers200WhenImageExists() {
 		log.Fatal(err)
 	}
 
-	_, err = ioutil.ReadAll(res.Body)
+	body, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	suite.Equal(200, res.StatusCode, "status code should be 200")
+	suite.Equal("image/jpeg", res.Header.Get("Content-Type"),
+		"Content-Type header should be image/jpg")
+	suite.Equal(strconv.Itoa(len(body)), res.Header.Get("Content-Length"),
+		"Content-Length header should be")
 }
 
 func (suite *FakeExternalServerTestSuite) TestAnswers400WheNoUrlIsGiven() {
@@ -76,14 +81,32 @@ func (suite *FakeExternalServerTestSuite) TestAnswers400WheNoUrlIsGiven() {
 		log.Fatal(err)
 	}
 
-	_, err = ioutil.ReadAll(res.Body)
+	body, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	suite.Equal(400, res.StatusCode, "status code should be 400")
+	suite.Equal(string(body), "Invalid image url provided\n", "they should be equal")
 }
+
+// func (suite *FakeExternalServerTestSuite) TestAnswers400WheUrlIsInvalid() {
+// 	res, err := http.Get(fmt.Sprintf("%s/%s",
+// 		suite.subjectServer.URL, "asdaishdih"))
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+//
+// 	body, err := ioutil.ReadAll(res.Body)
+// 	res.Body.Close()
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+//
+// 	suite.Equal(400, res.StatusCode, "status code should be 400")
+// 	suite.Equal(string(body), "", "they should be equal")
+// }
 
 func (suite *FakeExternalServerTestSuite) TearDownTest() {
 	suite.subjectServer.Close()
