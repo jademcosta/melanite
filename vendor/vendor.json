@@ -61,6 +61,12 @@
 			"path": "github.com/stretchr/testify/suite",
 			"revision": "05e8a0eda380579888eb53c394909df027f06991",
 			"revisionTime": "2017-07-13T16:51:06Z"
+		},
+		{
+			"checksumSHA1": "5/M5X93GwmCNzpB306atB5puLSo=",
+			"path": "github.com/urfave/negroni",
+			"revision": "b52430c192a156df9ce64f249ccb551f0ff3467f",
+			"revisionTime": "2017-07-11T19:42:05Z"
 		}
 	],
 	"rootPath": "github.com/jademcosta/melanite"
