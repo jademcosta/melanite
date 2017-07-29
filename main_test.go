@@ -69,6 +69,22 @@ func (suite *FakeExternalServerTestSuite) TestAnswers200WhenImageExists() {
 	suite.Equal(200, res.StatusCode, "status code should be 200")
 }
 
+func (suite *FakeExternalServerTestSuite) TestAnswers400WheNoUrlIsGiven() {
+	res, err := http.Get(fmt.Sprintf("%s/%s",
+		suite.subjectServer.URL, ""))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = ioutil.ReadAll(res.Body)
+	res.Body.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	suite.Equal(400, res.StatusCode, "status code should be 400")
+}
+
 func (suite *FakeExternalServerTestSuite) TearDownTest() {
 	suite.subjectServer.Close()
 }
