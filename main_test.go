@@ -23,7 +23,6 @@ func (suite *FakeExternalServerTestSuite) SetupSuite() {
 	suite.fakeServer = &http.Server{Addr: ":8081", Handler: http.FileServer(http.Dir(testImagesFolder))}
 	go func() {
 		suite.fakeServer.ListenAndServe()
-		// http.ListenAndServe(":8081", suite.fakeServer)
 	}()
 }
 
@@ -33,12 +32,11 @@ func TestFakeExternalServerTestSuite(t *testing.T) {
 
 func (suite *FakeExternalServerTestSuite) SetupTest() {
 	suite.subjectServer = httptest.NewServer(GetApp())
-	// defer suite.subjectServer.Close()
 }
 
 func (suite *FakeExternalServerTestSuite) TestExample() {
 	res, err := http.Get(fmt.Sprintf("%s/%s",
-		suite.subjectServer.URL, "http://localhost:8081/oi.txt"))
+		suite.subjectServer.URL, "http://localhost:8081/oi.png"))
 	if err != nil {
 		log.Fatal(err)
 	}
