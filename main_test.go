@@ -11,6 +11,8 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
+const testImagesFolder = "./test/images"
+
 type FakeExternalServerTestSuite struct {
 	suite.Suite
 	fakeServer    *http.Server
@@ -18,7 +20,7 @@ type FakeExternalServerTestSuite struct {
 }
 
 func (suite *FakeExternalServerTestSuite) SetupSuite() {
-	suite.fakeServer = &http.Server{Addr: ":8081", Handler: http.FileServer(http.Dir("."))}
+	suite.fakeServer = &http.Server{Addr: ":8081", Handler: http.FileServer(http.Dir(testImagesFolder))}
 	go func() {
 		suite.fakeServer.ListenAndServe()
 		// http.ListenAndServe(":8081", suite.fakeServer)
