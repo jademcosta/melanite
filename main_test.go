@@ -132,6 +132,24 @@ func (suite *FakeExternalServerTestSuite) TestAnswers400WhenUrlDoNotStartWithHtt
 	suite.Equal(string(body), "Invalid image url provided\n", "they should be equal")
 }
 
+func (suite *FakeExternalServerTestSuite) TestAnswers400WhenAskForUnsupportedConversionFormat() {
+	res, err := http.Get(fmt.Sprintf("%s/%s",
+		suite.subjectServer.URL, "http://localhost:8081/park-view.jpg?o=pngdas"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	body, err := ioutil.ReadAll(res.Body)
+	res.Body.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	suite.Equal(400, res.StatusCode, "status code should be 400")
+	suite.Equal(string(body), "Image conversion format not supported\n",
+		"they should be equal")
+}
+
 func (suite *FakeExternalServerTestSuite) TearDownTest() {
 	suite.subjectServer.Close()
 }

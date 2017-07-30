@@ -8,8 +8,10 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jademcosta/melanite/converter"
 	"github.com/julienschmidt/httprouter"
 	"github.com/meatballhat/negroni-logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/urfave/negroni"
 )
 
@@ -60,6 +62,14 @@ func FetcherFunc(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	if len(format) == 0 {
 		http.Error(rw, "Content-Type not defined by upstream server", http.StatusInternalServerError)
 		return
+	}
+
+	if output, ok := r.URL.Query()["o"]; ok && len(output) > 0 {
+		if !converter.IsValidImageEncoding(output[0]) {
+			http.Error(rw, "Image conversion format not supported", http.StatusBadRequest)
+			return
+		}
+		log.Infof("Asked to convert image to format %s", output[0])
 	}
 
 	rw.Header().Add("Content-Length", strconv.Itoa(len(*imgAsBytes)))
