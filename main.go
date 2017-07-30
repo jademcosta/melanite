@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 
@@ -28,7 +29,7 @@ func GetApp() http.Handler {
 func FetcherFunc(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	url := removePrefixSlash(p.ByName("fileUri"))
 
-	if isEmpty(url) {
+	if isEmpty(url) || !isValidUrl(url) {
 		http.Error(rw, "Invalid image url provided", http.StatusBadRequest)
 		return
 	}
@@ -89,6 +90,14 @@ func isEmpty(s string) bool {
 		return true
 	}
 	return false
+}
+
+func isValidUrl(s string) bool {
+	_, err := url.ParseRequestURI(s)
+	if err != nil {
+		return false
+	}
+	return true
 }
 
 func removePrefixSlash(s string) string {
