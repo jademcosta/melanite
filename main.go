@@ -73,7 +73,7 @@ func FetcherFunc(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	}
 
 	rw.Header().Add("Content-Length", strconv.Itoa(len(*imgAsBytes)))
-	rw.Header().Add("Content-Type", format)
+	rw.Header().Add("Content-Type", http.DetectContentType(*imgAsBytes))
 	rw.Write(*imgAsBytes)
 }
 
