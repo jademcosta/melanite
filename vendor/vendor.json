@@ -15,10 +15,22 @@
 			"revisionTime": "2017-04-30T22:20:11Z"
 		},
 		{
+			"checksumSHA1": "Nccb7HJ4LoSjQ83mjpSDAPCivDs=",
+			"path": "github.com/meatballhat/negroni-logrus",
+			"revision": "259659cbe5df2a5732a3c677d040058215be1ee7",
+			"revisionTime": "2017-06-14T11:45:20Z"
+		},
+		{
 			"checksumSHA1": "LuFv4/jlrmFNnDb/5SCSEPAM9vU=",
 			"path": "github.com/pmezard/go-difflib/difflib",
 			"revision": "792786c7400a136282c1664665ae0a8db921c6c2",
 			"revisionTime": "2016-01-10T10:55:54Z"
+		},
+		{
+			"checksumSHA1": "I5DMrLM0FpmvG81tAWZ3zoydBIo=",
+			"path": "github.com/sirupsen/logrus",
+			"revision": "181d419aa9e2223811b824e8f0b4af96f9ba9302",
+			"revisionTime": "2017-07-28T07:42:14Z"
 		},
 		{
 			"checksumSHA1": "K0crHygPTP42i1nLKWphSlvOQJw=",
@@ -67,6 +79,18 @@
 			"path": "github.com/urfave/negroni",
 			"revision": "b52430c192a156df9ce64f249ccb551f0ff3467f",
 			"revisionTime": "2017-07-11T19:42:05Z"
+		},
+		{
+			"checksumSHA1": "+WzOFwhDdPcz5PYt7imWl71ekZY=",
+			"path": "golang.org/x/crypto/ssh/terminal",
+			"revision": "558b6879de74bc843225cde5686419267ff707ca",
+			"revisionTime": "2017-07-28T12:36:07Z"
+		},
+		{
+			"checksumSHA1": "SvnN+XybZlZDs3l9OFOiNXJsB/A=",
+			"path": "golang.org/x/sys/unix",
+			"revision": "0f826bdd13b500be0f1d4004938ad978fcc6031e",
+			"revisionTime": "2017-07-27T15:10:50Z"
 		}
 	],
 	"rootPath": "github.com/jademcosta/melanite"

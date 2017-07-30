@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/meatballhat/negroni-logrus"
 	"github.com/urfave/negroni"
 )
 
@@ -21,6 +22,7 @@ func GetApp() http.Handler {
 	r.GET("/*fileUri", FetcherFunc)
 
 	n := negroni.New(negroni.NewRecovery())
+	n.Use(negronilogrus.NewMiddleware())
 	n.UseHandler(r)
 
 	return n
