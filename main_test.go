@@ -98,9 +98,26 @@ func (suite *FakeExternalServerTestSuite) TestAnswers400WheNoUrlIsGiven() {
 	suite.Equal(string(body), "Invalid image url provided\n", "they should be equal")
 }
 
-func (suite *FakeExternalServerTestSuite) TestAnswers400WheUrlIsInvalid() {
+func (suite *FakeExternalServerTestSuite) TestAnswers400WhenUrlIsInvalid() {
 	res, err := http.Get(fmt.Sprintf("%s/%s",
 		suite.subjectServer.URL, "asdaishdih"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	body, err := ioutil.ReadAll(res.Body)
+	res.Body.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	suite.Equal(400, res.StatusCode, "status code should be 400")
+	suite.Equal(string(body), "Invalid image url provided\n", "they should be equal")
+}
+
+func (suite *FakeExternalServerTestSuite) TestAnswers400WhenUrlDoNotStartWithHttp() {
+	res, err := http.Get(fmt.Sprintf("%s/%s",
+		suite.subjectServer.URL, "google.com"))
 	if err != nil {
 		log.Fatal(err)
 	}
