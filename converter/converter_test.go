@@ -2,11 +2,15 @@ package converter_test
 
 import (
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"testing"
 
 	"github.com/jademcosta/melanite/converter"
 	"github.com/stretchr/testify/assert"
 )
+
+const testImagesFolder = "../test/images"
 
 func TestValidationWorksForImageEncodingsThatAreSupported(t *testing.T) {
 
@@ -28,5 +32,46 @@ func TestValidationWorksForImageEncodingsThatAreSupported(t *testing.T) {
 			sample.expectedResult, converter.IsValidImageEncoding(sample.format),
 			fmt.Sprintf("should be %v", sample.expectedResult))
 	}
+}
 
+func TestConversionFromJpgToPng(t *testing.T) {
+	diskImage, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", testImagesFolder, "park-view-XXS.jpg"))
+	if err != nil {
+		panic(err)
+	}
+
+	convertedImage, err := converter.Convert(diskImage, "png")
+	if err != nil {
+		panic(err)
+	}
+
+	assert.Equal(t,
+		"image/png", http.DetectContentType(*convertedImage),
+		"The image should be converted to PNG")
+}
+
+func TestConversionFromPngToJpg(t *testing.T) {
+	diskImage, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", testImagesFolder, "park-view-XS.png"))
+	if err != nil {
+		panic(err)
+	}
+
+	convertedImage, err := converter.Convert(diskImage, "jpg")
+	if err != nil {
+		panic(err)
+	}
+
+	assert.Equal(t,
+		"image/jpeg", http.DetectContentType(*convertedImage),
+		"The image should be converted to JPG")
+}
+
+func TestConversionOfInvalidFileReturnError(t *testing.T) {
+	wrongImage := []byte{12, 34, 124}
+
+	_, err := converter.Convert(wrongImage, "jpg")
+	assert.NotNil(t, err, "An error should be returned")
+
+	_, err = converter.Convert(wrongImage, "png")
+	assert.NotNil(t, err, "An error should be returned")
 }
