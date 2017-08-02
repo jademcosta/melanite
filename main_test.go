@@ -56,7 +56,7 @@ func (suite *FakeExternalServerTestSuite) TestAnswers404WhenImageNotFound() {
 
 func (suite *FakeExternalServerTestSuite) TestAnswers200WhenImageExists() {
 	res, err := http.Get(fmt.Sprintf("%s/%s",
-		suite.subjectServer.URL, "http://localhost:8081/park-view.jpg"))
+		suite.subjectServer.URL, "http://localhost:8081/park-view-XS.jpg"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -67,7 +67,7 @@ func (suite *FakeExternalServerTestSuite) TestAnswers200WhenImageExists() {
 		log.Fatal(err)
 	}
 
-	dat, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", testImagesFolder, "park-view.jpg"))
+	dat, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", testImagesFolder, "park-view-XS.jpg"))
 	if err != nil {
 		panic(err)
 	}
@@ -134,7 +134,7 @@ func (suite *FakeExternalServerTestSuite) TestAnswers400WhenUrlDoNotStartWithHtt
 
 func (suite *FakeExternalServerTestSuite) TestAnswers400WhenAskForUnsupportedConversionFormat() {
 	res, err := http.Get(fmt.Sprintf("%s/%s",
-		suite.subjectServer.URL, "http://localhost:8081/park-view.jpg?o=pngdas"))
+		suite.subjectServer.URL, "http://localhost:8081/park-view-XS.jpg?o=pngdas"))
 	if err != nil {
 		log.Fatal(err)
 	}
