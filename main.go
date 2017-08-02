@@ -10,8 +10,7 @@ import (
 
 	"github.com/jademcosta/melanite/converter"
 	"github.com/julienschmidt/httprouter"
-	"github.com/meatballhat/negroni-logrus"
-	log "github.com/sirupsen/logrus"
+	negronilogrus "github.com/meatballhat/negroni-logrus"
 	"github.com/urfave/negroni"
 )
 
@@ -57,19 +56,25 @@ func FetcherFunc(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		return
 	}
 
-	format := response.Header.Get("Content-Type")
-
-	if len(format) == 0 {
-		http.Error(rw, "Content-Type not defined by upstream server", http.StatusInternalServerError)
-		return
-	}
+	// format := response.Header.Get("Content-Type")
+	//
+	// if len(format) == 0 {
+	// 	http.Error(rw, "Content-Type not defined by upstream server", http.StatusInternalServerError)
+	// 	return
+	// }
 
 	if output, ok := r.URL.Query()["o"]; ok && len(output) > 0 {
-		if !converter.IsValidImageEncoding(output[0]) {
+		outputFormat := output[0]
+		if !converter.IsValidImageEncoding(outputFormat) {
 			http.Error(rw, "Image conversion format not supported", http.StatusBadRequest)
 			return
 		}
-		log.Infof("Asked to convert image to format %s", output[0])
+
+		imgAsBytes, err = converter.Convert(*imgAsBytes, outputFormat)
+		if err != nil {
+			http.Error(rw, "Image conversion failed", http.StatusInternalServerError)
+			return
+		}
 	}
 
 	rw.Header().Add("Content-Length", strconv.Itoa(len(*imgAsBytes)))

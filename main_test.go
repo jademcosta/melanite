@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"image"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -148,6 +150,78 @@ func (suite *FakeExternalServerTestSuite) TestAnswers400WhenAskForUnsupportedCon
 	suite.Equal(400, res.StatusCode, "status code should be 400")
 	suite.Equal(string(body), "Image conversion format not supported\n",
 		"they should be equal")
+}
+
+func (suite *FakeExternalServerTestSuite) TestConvertJpgToPng() {
+	res, err := http.Get(fmt.Sprintf("%s/%s",
+		suite.subjectServer.URL, "http://localhost:8081/park-view-XS.jpg?o=png"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	body, err := ioutil.ReadAll(res.Body)
+	res.Body.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	suite.Equal(200, res.StatusCode, "status code should be 200")
+	suite.Equal("image/png", res.Header.Get("Content-Type"),
+		"Content-Type header should be image/png")
+
+	_, format, err := image.Decode(bytes.NewReader(body))
+	if err != nil {
+		panic(err)
+	}
+	suite.Equal("png", format, "The returned image should be a PNG")
+}
+
+func (suite *FakeExternalServerTestSuite) TestConvertPngToJpg() {
+	res, err := http.Get(fmt.Sprintf("%s/%s",
+		suite.subjectServer.URL, "http://localhost:8081/park-view-XS.png?o=jpg"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	body, err := ioutil.ReadAll(res.Body)
+	res.Body.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	suite.Equal(200, res.StatusCode, "status code should be 200")
+	suite.Equal("image/jpeg", res.Header.Get("Content-Type"),
+		"Content-Type header should be image/jpeg")
+
+	_, format, err := image.Decode(bytes.NewReader(body))
+	if err != nil {
+		panic(err)
+	}
+	suite.Equal("jpeg", format, "The returned image should be a JPG")
+}
+
+func (suite *FakeExternalServerTestSuite) TestConvertPngToPng() {
+	res, err := http.Get(fmt.Sprintf("%s/%s",
+		suite.subjectServer.URL, "http://localhost:8081/park-view-XS.png?o=png"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	body, err := ioutil.ReadAll(res.Body)
+	res.Body.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	suite.Equal(200, res.StatusCode, "status code should be 200")
+	suite.Equal("image/png", res.Header.Get("Content-Type"),
+		"Content-Type header should be image/png")
+
+	_, format, err := image.Decode(bytes.NewReader(body))
+	if err != nil {
+		panic(err)
+	}
+	suite.Equal("png", format, "The returned image should be a PNG")
 }
 
 func (suite *FakeExternalServerTestSuite) TearDownTest() {
