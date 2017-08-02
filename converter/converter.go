@@ -5,10 +5,12 @@ import (
 	"image"
 	"image/jpeg"
 	"image/png"
+
+	"github.com/chai2010/webp"
 )
 
 func IsValidImageEncoding(encoding string) bool {
-	if encoding == "jpg" || encoding == "png" {
+	if encoding == "jpg" || encoding == "png" || encoding == "webp" {
 		return true
 	}
 	return false
@@ -28,6 +30,8 @@ func Convert(imgAsBytes []byte, outputFormat string) (*[]byte, error) {
 		err = png.Encode(buf, image)
 	case "jpg":
 		err = jpeg.Encode(buf, image, nil)
+	case "webp":
+		err = webp.Encode(buf, image, nil)
 	}
 
 	if err != nil {

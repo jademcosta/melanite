@@ -51,7 +51,7 @@ func TestConversionFromJpgToPng(t *testing.T) {
 }
 
 func TestConversionFromPngToJpg(t *testing.T) {
-	diskImage, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", testImagesFolder, "park-view-XS.png"))
+	diskImage, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", testImagesFolder, "park-view-XXS.png"))
 	if err != nil {
 		panic(err)
 	}
@@ -64,6 +64,70 @@ func TestConversionFromPngToJpg(t *testing.T) {
 	assert.Equal(t,
 		"image/jpeg", http.DetectContentType(*convertedImage),
 		"The image should be converted to JPG")
+}
+
+func TestConversionFromPngToWebp(t *testing.T) {
+	diskImage, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", testImagesFolder, "park-view-XXS.png"))
+	if err != nil {
+		panic(err)
+	}
+
+	convertedImage, err := converter.Convert(diskImage, "webp")
+	if err != nil {
+		panic(err)
+	}
+
+	assert.Equal(t,
+		"image/webp", http.DetectContentType(*convertedImage),
+		"The image should be converted to WEBP")
+}
+
+func TestConversionFromJpgToWebp(t *testing.T) {
+	diskImage, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", testImagesFolder, "park-view-XXS.jpg"))
+	if err != nil {
+		panic(err)
+	}
+
+	convertedImage, err := converter.Convert(diskImage, "webp")
+	if err != nil {
+		panic(err)
+	}
+
+	assert.Equal(t,
+		"image/webp", http.DetectContentType(*convertedImage),
+		"The image should be converted to WEBP")
+}
+
+func TestConversionFromWebpToJpg(t *testing.T) {
+	diskImage, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", testImagesFolder, "park-view-XXS.webp"))
+	if err != nil {
+		panic(err)
+	}
+
+	convertedImage, err := converter.Convert(diskImage, "jpg")
+	if err != nil {
+		panic(err)
+	}
+
+	assert.Equal(t,
+		"image/jpeg", http.DetectContentType(*convertedImage),
+		"The image should be converted to JPG")
+}
+
+func TestConversionFromWebpToPng(t *testing.T) {
+	diskImage, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", testImagesFolder, "park-view-XXS.webp"))
+	if err != nil {
+		panic(err)
+	}
+
+	convertedImage, err := converter.Convert(diskImage, "png")
+	if err != nil {
+		panic(err)
+	}
+
+	assert.Equal(t,
+		"image/png", http.DetectContentType(*convertedImage),
+		"The image should be converted to PNG")
 }
 
 func TestConversionOfInvalidFileReturnError(t *testing.T) {
