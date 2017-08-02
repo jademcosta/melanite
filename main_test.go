@@ -200,6 +200,30 @@ func (suite *FakeExternalServerTestSuite) TestConvertPngToJpg() {
 	suite.Equal("jpeg", format, "The returned image should be a JPG")
 }
 
+func (suite *FakeExternalServerTestSuite) TestConvertPngToWebp() {
+	res, err := http.Get(fmt.Sprintf("%s/%s",
+		suite.subjectServer.URL, "http://localhost:8081/park-view-XS.png?o=webp"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	body, err := ioutil.ReadAll(res.Body)
+	res.Body.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	suite.Equal(200, res.StatusCode, "status code should be 200")
+	suite.Equal("image/webp", res.Header.Get("Content-Type"),
+		"Content-Type header should be image/webp")
+
+	_, format, err := image.Decode(bytes.NewReader(body))
+	if err != nil {
+		panic(err)
+	}
+	suite.Equal("webp", format, "The returned image should be a WEBP")
+}
+
 func (suite *FakeExternalServerTestSuite) TestConvertPngToPng() {
 	res, err := http.Get(fmt.Sprintf("%s/%s",
 		suite.subjectServer.URL, "http://localhost:8081/park-view-XS.png?o=png"))
