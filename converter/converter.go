@@ -1,13 +1,6 @@
 package converter
 
-import (
-	"bytes"
-	"image"
-	"image/jpeg"
-	"image/png"
-
-	"github.com/chai2010/webp"
-)
+import "github.com/h2non/bimg"
 
 func IsValidImageEncoding(encoding string) bool {
 	if encoding == "jpg" || encoding == "png" || encoding == "webp" {
@@ -18,27 +11,21 @@ func IsValidImageEncoding(encoding string) bool {
 
 func Convert(imgAsBytes []byte, outputFormat string) (*[]byte, error) {
 
-	image, _, err := image.Decode(bytes.NewReader(imgAsBytes))
-	if err != nil {
-		return nil, err
-	}
-
-	buf := &bytes.Buffer{}
+	var imgFormat bimg.ImageType = bimg.PNG
 
 	switch outputFormat {
 	case "png":
-		err = png.Encode(buf, image)
+		imgFormat = bimg.PNG
 	case "jpg":
-		err = jpeg.Encode(buf, image, nil)
+		imgFormat = bimg.JPEG
 	case "webp":
-		err = webp.Encode(buf, image, nil)
+		imgFormat = bimg.WEBP
 	}
 
+	bts, err := bimg.Resize(imgAsBytes, bimg.Options{Type: imgFormat})
 	if err != nil {
 		return nil, err
 	}
 
-	convertedImg := buf.Bytes()
-
-	return &convertedImg, nil
+	return &bts, nil
 }
