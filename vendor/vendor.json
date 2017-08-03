@@ -9,6 +9,12 @@
 			"revisionTime": "2017-07-11T18:34:51Z"
 		},
 		{
+			"checksumSHA1": "ypf1HHhSepxhWIKTjqoorjzcmE4=",
+			"path": "github.com/h2non/bimg",
+			"revision": "14ff7ff2c8d9060fd7d73a57b725c4a37342fa91",
+			"revisionTime": "2017-07-18T10:28:53Z"
+		},
+		{
 			"checksumSHA1": "gKyBj05YkfuLFruAyPZ4KV9nFp8=",
 			"path": "github.com/julienschmidt/httprouter",
 			"revision": "975b5c4c7c21c0e3d2764200bf2aa8e34657ae6e",
@@ -73,6 +79,12 @@
 			"path": "github.com/stretchr/testify/suite",
 			"revision": "05e8a0eda380579888eb53c394909df027f06991",
 			"revisionTime": "2017-07-13T16:51:06Z"
+		},
+		{
+			"checksumSHA1": "xjDXDXUljkSvJXm+sk+UY3ukBN0=",
+			"path": "github.com/tj/go-debug",
+			"revision": "ff4a55a20a86994118644bbddc6a216da193cc13",
+			"revisionTime": "2014-10-22T19:30:16Z"
 		},
 		{
 			"checksumSHA1": "5/M5X93GwmCNzpB306atB5puLSo=",
