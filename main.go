@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/jademcosta/melanite/converter"
+	"github.com/jademcosta/melanite/resizer"
 	"github.com/julienschmidt/httprouter"
 	negronilogrus "github.com/meatballhat/negroni-logrus"
 	"github.com/urfave/negroni"
@@ -56,13 +57,6 @@ func FetcherFunc(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		return
 	}
 
-	// format := response.Header.Get("Content-Type")
-	//
-	// if len(format) == 0 {
-	// 	http.Error(rw, "Content-Type not defined by upstream server", http.StatusInternalServerError)
-	// 	return
-	// }
-
 	if output, ok := r.URL.Query()["o"]; ok && len(output) > 0 {
 		outputFormat := output[0]
 		if !converter.IsValidImageEncoding(outputFormat) {
@@ -73,6 +67,16 @@ func FetcherFunc(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		imgAsBytes, err = converter.Convert(*imgAsBytes, outputFormat)
 		if err != nil {
 			http.Error(rw, "Image conversion failed", http.StatusInternalServerError)
+			return
+		}
+	}
+
+	if resizeParam, ok := r.URL.Query()["r"]; ok && len(resizeParam) > 0 {
+		resizeDimensions := resizeParam[0]
+
+		*imgAsBytes, err = resizer.Resize(*imgAsBytes, resizeDimensions)
+		if err != nil {
+			http.Error(rw, "Image resizing failed", http.StatusInternalServerError)
 			return
 		}
 	}

@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"image"
+	_ "image/png"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -217,6 +220,58 @@ func (suite *FakeExternalServerTestSuite) TestConvertPngToPng() {
 		log.Fatal(err)
 	}
 
+	suite.Equal(200, res.StatusCode, "status code should be 200")
+	suite.Equal("image/png", res.Header.Get("Content-Type"),
+		"Content-Type header should be image/png")
+}
+
+func (suite *FakeExternalServerTestSuite) TestResize() {
+	//260x147
+	res, err := http.Get(fmt.Sprintf("%s/%s",
+		suite.subjectServer.URL, "http://localhost:8081/park-view-XS.png?r=130x0"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	body, err := ioutil.ReadAll(res.Body)
+	res.Body.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	img, _, err := image.Decode(bytes.NewReader(body))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	suite.Equal(130, img.Bounds().Dx(), "The width should be resized")
+	suite.Equal(74, img.Bounds().Dy(), "The height should be resized")
+	suite.Equal(200, res.StatusCode, "status code should be 200")
+	suite.Equal("image/png", res.Header.Get("Content-Type"),
+		"Content-Type header should be image/png")
+}
+
+func (suite *FakeExternalServerTestSuite) TestEnlargement() {
+	//260x147
+	res, err := http.Get(fmt.Sprintf("%s/%s",
+		suite.subjectServer.URL, "http://localhost:8081/park-view-XS.png?r=520x0"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	body, err := ioutil.ReadAll(res.Body)
+	res.Body.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	img, _, err := image.Decode(bytes.NewReader(body))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	suite.Equal(520, img.Bounds().Dx(), "The width should be resized")
+	suite.Equal(294, img.Bounds().Dy(), "The height should be resized")
 	suite.Equal(200, res.StatusCode, "status code should be 200")
 	suite.Equal("image/png", res.Header.Get("Content-Type"),
 		"Content-Type header should be image/png")
