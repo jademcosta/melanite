@@ -6,7 +6,6 @@ import (
 	"image"
 	_ "image/png"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -44,13 +43,13 @@ func (suite *FakeExternalServerTestSuite) TestAnswers404WhenImageNotFound() {
 	res, err := http.Get(fmt.Sprintf("%s/%s",
 		suite.subjectServer.URL, "http://localhost:8081/oi.png"))
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	body, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	suite.Equal(404, res.StatusCode, "status code should be 404")
@@ -61,13 +60,13 @@ func (suite *FakeExternalServerTestSuite) TestAnswers200WhenImageExists() {
 	res, err := http.Get(fmt.Sprintf("%s/%s",
 		suite.subjectServer.URL, "http://localhost:8081/park-view-XS.jpg"))
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	body, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	dat, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", testImagesFolder, "park-view-XS.jpg"))
@@ -88,13 +87,13 @@ func (suite *FakeExternalServerTestSuite) TestAnswers400WheNoUrlIsGiven() {
 	res, err := http.Get(fmt.Sprintf("%s/%s",
 		suite.subjectServer.URL, ""))
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	body, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	suite.Equal(400, res.StatusCode, "status code should be 400")
@@ -105,13 +104,13 @@ func (suite *FakeExternalServerTestSuite) TestAnswers400WhenUrlIsInvalid() {
 	res, err := http.Get(fmt.Sprintf("%s/%s",
 		suite.subjectServer.URL, "asdaishdih"))
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	body, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	suite.Equal(400, res.StatusCode, "status code should be 400")
@@ -122,13 +121,13 @@ func (suite *FakeExternalServerTestSuite) TestAnswers400WhenUrlDoNotStartWithHtt
 	res, err := http.Get(fmt.Sprintf("%s/%s",
 		suite.subjectServer.URL, "google.com"))
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	body, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	suite.Equal(400, res.StatusCode, "status code should be 400")
@@ -139,13 +138,13 @@ func (suite *FakeExternalServerTestSuite) TestAnswers400WhenAskForUnsupportedCon
 	res, err := http.Get(fmt.Sprintf("%s/%s",
 		suite.subjectServer.URL, "http://localhost:8081/park-view-XS.jpg?o=pngdas"))
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	body, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	suite.Equal(400, res.StatusCode, "status code should be 400")
@@ -157,13 +156,13 @@ func (suite *FakeExternalServerTestSuite) TestConvertJpgToPng() {
 	res, err := http.Get(fmt.Sprintf("%s/%s",
 		suite.subjectServer.URL, "http://localhost:8081/park-view-XS.jpg?o=png"))
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	_, err = ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	suite.Equal(200, res.StatusCode, "status code should be 200")
@@ -175,13 +174,13 @@ func (suite *FakeExternalServerTestSuite) TestConvertPngToJpg() {
 	res, err := http.Get(fmt.Sprintf("%s/%s",
 		suite.subjectServer.URL, "http://localhost:8081/park-view-XS.png?o=jpg"))
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	_, err = ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	suite.Equal(200, res.StatusCode, "status code should be 200")
@@ -193,13 +192,13 @@ func (suite *FakeExternalServerTestSuite) TestConvertPngToWebp() {
 	res, err := http.Get(fmt.Sprintf("%s/%s",
 		suite.subjectServer.URL, "http://localhost:8081/park-view-XS.png?o=webp"))
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	_, err = ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	suite.Equal(200, res.StatusCode, "status code should be 200")
@@ -211,13 +210,13 @@ func (suite *FakeExternalServerTestSuite) TestConvertPngToPng() {
 	res, err := http.Get(fmt.Sprintf("%s/%s",
 		suite.subjectServer.URL, "http://localhost:8081/park-view-XS.png?o=png"))
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	_, err = ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	suite.Equal(200, res.StatusCode, "status code should be 200")
@@ -230,18 +229,18 @@ func (suite *FakeExternalServerTestSuite) TestResize() {
 	res, err := http.Get(fmt.Sprintf("%s/%s",
 		suite.subjectServer.URL, "http://localhost:8081/park-view-XS.png?r=130x0"))
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	body, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	img, _, err := image.Decode(bytes.NewReader(body))
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	suite.Equal(130, img.Bounds().Dx(), "The width should be resized")
@@ -256,18 +255,18 @@ func (suite *FakeExternalServerTestSuite) TestEnlargement() {
 	res, err := http.Get(fmt.Sprintf("%s/%s",
 		suite.subjectServer.URL, "http://localhost:8081/park-view-XS.png?r=520x0"))
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	body, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	img, _, err := image.Decode(bytes.NewReader(body))
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	suite.Equal(520, img.Bounds().Dx(), "The width should be resized")
