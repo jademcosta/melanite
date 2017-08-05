@@ -34,7 +34,7 @@ func FetcherFunc(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	url := removePrefixSlash(p.ByName("fileUri"))
 
 	if isEmpty(url) || !isValidUrl(url) {
-		http.Error(rw, "Invalid image url provided", http.StatusBadRequest)
+		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -45,7 +45,7 @@ func FetcherFunc(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	}
 
 	if externalImageNotFound(response) {
-		http.Error(rw, "", http.StatusNotFound)
+		rw.WriteHeader(http.StatusNotFound)
 		return
 	}
 
@@ -60,13 +60,13 @@ func FetcherFunc(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	if output, ok := r.URL.Query()["o"]; ok && len(output) > 0 {
 		outputFormat := output[0]
 		if !converter.IsValidImageEncoding(outputFormat) {
-			http.Error(rw, "Image conversion format not supported", http.StatusBadRequest)
+			rw.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
 		imgAsBytes, err = converter.Convert(*imgAsBytes, outputFormat)
 		if err != nil {
-			http.Error(rw, "Image conversion failed", http.StatusInternalServerError)
+			rw.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 	}
@@ -76,7 +76,7 @@ func FetcherFunc(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
 		*imgAsBytes, err = resizer.Resize(*imgAsBytes, resizeDimensions)
 		if err != nil {
-			http.Error(rw, "Image resizing failed", http.StatusInternalServerError)
+			rw.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 	}

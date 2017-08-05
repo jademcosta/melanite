@@ -53,7 +53,7 @@ func (suite *FakeExternalServerTestSuite) TestAnswers404WhenImageNotFound() {
 	}
 
 	suite.Equal(404, res.StatusCode, "status code should be 404")
-	suite.Equal(string(body), "\n", "they should be equal")
+	suite.Equal(string(body), "", "The body should be empty")
 }
 
 func (suite *FakeExternalServerTestSuite) TestAnswers200WhenImageExists() {
@@ -78,9 +78,9 @@ func (suite *FakeExternalServerTestSuite) TestAnswers200WhenImageExists() {
 	suite.Equal("image/jpeg", res.Header.Get("Content-Type"),
 		"Content-Type header should be image/jpg")
 	suite.Equal(strconv.Itoa(len(body)), res.Header.Get("Content-Length"),
-		"Content-Length header should be")
+		"Content-Length header should be sent")
 	suite.Equal(len(body), len(dat),
-		"The image should be the on we asked for")
+		"The image should be the one we asked for")
 }
 
 func (suite *FakeExternalServerTestSuite) TestAnswers400WheNoUrlIsGiven() {
@@ -97,7 +97,7 @@ func (suite *FakeExternalServerTestSuite) TestAnswers400WheNoUrlIsGiven() {
 	}
 
 	suite.Equal(400, res.StatusCode, "status code should be 400")
-	suite.Equal(string(body), "Invalid image url provided\n", "they should be equal")
+	suite.Equal(string(body), "", "The body should be empty")
 }
 
 func (suite *FakeExternalServerTestSuite) TestAnswers400WhenUrlIsInvalid() {
@@ -114,7 +114,7 @@ func (suite *FakeExternalServerTestSuite) TestAnswers400WhenUrlIsInvalid() {
 	}
 
 	suite.Equal(400, res.StatusCode, "status code should be 400")
-	suite.Equal(string(body), "Invalid image url provided\n", "they should be equal")
+	suite.Equal(string(body), "", "The body should be empty")
 }
 
 func (suite *FakeExternalServerTestSuite) TestAnswers400WhenUrlDoNotStartWithHttp() {
@@ -131,7 +131,7 @@ func (suite *FakeExternalServerTestSuite) TestAnswers400WhenUrlDoNotStartWithHtt
 	}
 
 	suite.Equal(400, res.StatusCode, "status code should be 400")
-	suite.Equal(string(body), "Invalid image url provided\n", "they should be equal")
+	suite.Equal(string(body), "", "The body should be empty")
 }
 
 func (suite *FakeExternalServerTestSuite) TestAnswers400WhenAskForUnsupportedConversionFormat() {
@@ -148,8 +148,7 @@ func (suite *FakeExternalServerTestSuite) TestAnswers400WhenAskForUnsupportedCon
 	}
 
 	suite.Equal(400, res.StatusCode, "status code should be 400")
-	suite.Equal(string(body), "Image conversion format not supported\n",
-		"they should be equal")
+	suite.Equal(string(body), "", "The body should be empty")
 }
 
 func (suite *FakeExternalServerTestSuite) TestConvertJpgToPng() {
