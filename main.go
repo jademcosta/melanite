@@ -29,11 +29,8 @@ func GetApp(logLevel log.Level, logFormatter log.Formatter) http.Handler {
 	r.GET("/*fileUri", FetcherFunc)
 
 	n := negroni.New(negroni.NewRecovery())
-	appLog := log.New()
-	appLog.SetLevel(logLevel)
-	appLog.Formatter = logFormatter
-
-	n.Use(negronilogrus.NewMiddlewareFromLogger(appLog, "melanite"))
+	n.Use(negronilogrus.NewMiddlewareFromLogger(getLogger(logLevel, logFormatter),
+		"melanite"))
 	n.UseHandler(r)
 
 	return n
@@ -93,6 +90,13 @@ func FetcherFunc(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	rw.Header().Add("Content-Length", strconv.Itoa(len(*imgAsBytes)))
 	rw.Header().Add("Content-Type", http.DetectContentType(*imgAsBytes))
 	rw.Write(*imgAsBytes)
+}
+
+func getLogger(logLevel log.Level, logFormatter log.Formatter) *log.Logger {
+	appLog := log.New()
+	appLog.SetLevel(logLevel)
+	appLog.Formatter = logFormatter
+	return appLog
 }
 
 func decodeImageFromBody(body *io.ReadCloser) (*[]byte, error) {
