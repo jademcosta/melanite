@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"testing"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -36,7 +37,7 @@ func TestFakeExternalServerTestSuite(t *testing.T) {
 }
 
 func (suite *FakeExternalServerTestSuite) SetupTest() {
-	suite.subjectServer = httptest.NewServer(GetApp())
+	suite.subjectServer = httptest.NewServer(GetApp(log.PanicLevel, &log.TextFormatter{}))
 }
 
 func (suite *FakeExternalServerTestSuite) TestAnswers404WhenImageNotFound() {

@@ -12,19 +12,28 @@ import (
 	"github.com/jademcosta/melanite/resizer"
 	"github.com/julienschmidt/httprouter"
 	negronilogrus "github.com/meatballhat/negroni-logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/urfave/negroni"
 )
 
+const defaultLogLevel = log.InfoLevel
+
+var defaultLogFormatter = &log.JSONFormatter{}
+
 func main() {
-	http.ListenAndServe(":8080", GetApp())
+	http.ListenAndServe(":8080", GetApp(defaultLogLevel, defaultLogFormatter))
 }
 
-func GetApp() http.Handler {
+func GetApp(logLevel log.Level, logFormatter log.Formatter) http.Handler {
 	r := httprouter.New()
 	r.GET("/*fileUri", FetcherFunc)
 
 	n := negroni.New(negroni.NewRecovery())
-	n.Use(negronilogrus.NewMiddleware())
+	appLog := log.New()
+	appLog.SetLevel(logLevel)
+	appLog.Formatter = logFormatter
+
+	n.Use(negronilogrus.NewMiddlewareFromLogger(appLog, "melanite"))
 	n.UseHandler(r)
 
 	return n
@@ -40,7 +49,7 @@ func FetcherFunc(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
 	response, err := getImage(&url)
 	if err != nil {
-		http.Error(rw, "", http.StatusInternalServerError)
+		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
