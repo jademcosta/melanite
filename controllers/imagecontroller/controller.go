@@ -10,22 +10,26 @@ import (
 	"github.com/jademcosta/melanite/config"
 	"github.com/jademcosta/melanite/converter"
 	"github.com/jademcosta/melanite/resizer"
+	log "github.com/sirupsen/logrus"
 )
 
 type ImageController struct {
 	config config.Config
+	logger *log.Logger
 }
 
-func New(config config.Config) *ImageController {
-	return &ImageController{config: config}
+func New(config config.Config, logger *log.Logger) *ImageController {
+	return &ImageController{config: config, logger: logger}
 }
 
 func (controller *ImageController) ServeHTTP(rw http.ResponseWriter,
 	r *http.Request) {
+	logger := controller.logger
 
 	filePath := r.URL.Path
 	emptyFilePath := "/"
 	if filePath == emptyFilePath {
+		logger.Info("Empty image path.")
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -34,11 +38,13 @@ func (controller *ImageController) ServeHTTP(rw http.ResponseWriter,
 
 	response, err := getImage(&url)
 	if err != nil {
+		logger.Errorf("Error when trying to get image from %s. Error: %s", url, err)
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	if response.StatusCode != http.StatusOK {
+		logger.Info("Image at %s answered %d", url, response.StatusCode)
 		rw.WriteHeader(response.StatusCode)
 		return
 	}
@@ -47,6 +53,7 @@ func (controller *ImageController) ServeHTTP(rw http.ResponseWriter,
 
 	imgAsBytes, err := decodeImageFromBody(&response.Body)
 	if err != nil {
+		logger.Errorf("Error when trying to decode image. Error: %s", err)
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -60,6 +67,7 @@ func (controller *ImageController) ServeHTTP(rw http.ResponseWriter,
 
 		imgAsBytes, err = converter.Convert(*imgAsBytes, outputFormat)
 		if err != nil {
+			logger.Errorf("Error when trying to convert image. Error: %s", err)
 			rw.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -70,6 +78,7 @@ func (controller *ImageController) ServeHTTP(rw http.ResponseWriter,
 
 		*imgAsBytes, err = resizer.Resize(*imgAsBytes, resizeDimensions)
 		if err != nil {
+			logger.Errorf("Error when trying to resize image. Error: %s", err)
 			rw.WriteHeader(http.StatusInternalServerError)
 			return
 		}

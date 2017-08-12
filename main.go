@@ -34,7 +34,7 @@ func main() {
 func GetApp(configuration config.Config, logger *log.Logger) http.Handler {
 
 	r := http.NewServeMux()
-	r.Handle("/", imagecontroller.New(configuration))
+	r.Handle("/", imagecontroller.New(configuration, logger))
 
 	n := negroni.New(negroni.NewRecovery())
 	n.Use(negronilogrus.NewMiddlewareFromLogger(logger,
