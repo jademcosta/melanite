@@ -9,7 +9,6 @@ import (
 
 	"github.com/jademcosta/melanite/config"
 	"github.com/jademcosta/melanite/controllers/imagecontroller"
-	"github.com/julienschmidt/httprouter"
 	negronilogrus "github.com/meatballhat/negroni-logrus"
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/negroni"
@@ -36,14 +35,14 @@ func main() {
 func GetApp(logLevel log.Level, logFormatter log.Formatter,
 	configuration config.Config) http.Handler {
 
-	r := httprouter.New()
-	r.GET("/*fileUri", imagecontroller.New(configuration).ServeHttp)
+	r := http.NewServeMux()
+	r.Handle("/", imagecontroller.New(configuration))
 
 	n := negroni.New(negroni.NewRecovery())
 	n.Use(negronilogrus.NewMiddlewareFromLogger(getLogger(logLevel, logFormatter),
 		"melanite"))
-	n.UseHandler(r)
 
+	n.UseHandler(r)
 	return n
 }
 

@@ -10,7 +10,6 @@ import (
 	"github.com/jademcosta/melanite/config"
 	"github.com/jademcosta/melanite/converter"
 	"github.com/jademcosta/melanite/resizer"
-	"github.com/julienschmidt/httprouter"
 )
 
 type ImageController struct {
@@ -21,10 +20,10 @@ func New(config config.Config) *ImageController {
 	return &ImageController{config: config}
 }
 
-func (controller *ImageController) ServeHttp(rw http.ResponseWriter,
-	r *http.Request, p httprouter.Params) {
+func (controller *ImageController) ServeHTTP(rw http.ResponseWriter,
+	r *http.Request) {
 
-	filePath := p.ByName("fileUri")
+	filePath := r.URL.Path
 	if filePath == "/" {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
