@@ -15,6 +15,7 @@ import (
 )
 
 const defaultLogLevel = log.InfoLevel
+const defaultPort = "8080"
 
 var defaultLogFormatter = &log.JSONFormatter{}
 
@@ -29,7 +30,7 @@ func main() {
 		panic(err)
 	}
 
-	http.ListenAndServe(":8080", GetApp(defaultLogLevel, defaultLogFormatter, configuration))
+	http.ListenAndServe(fmt.Sprintf(":%s", defaultPort), GetApp(defaultLogLevel, defaultLogFormatter, configuration))
 }
 
 func GetApp(logLevel log.Level, logFormatter log.Formatter,
