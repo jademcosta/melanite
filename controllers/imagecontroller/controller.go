@@ -24,7 +24,8 @@ func (controller *ImageController) ServeHTTP(rw http.ResponseWriter,
 	r *http.Request) {
 
 	filePath := r.URL.Path
-	if filePath == "/" {
+	emptyFilePath := "/"
+	if filePath == emptyFilePath {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -37,8 +38,8 @@ func (controller *ImageController) ServeHTTP(rw http.ResponseWriter,
 		return
 	}
 
-	if externalImageNotFound(response) {
-		rw.WriteHeader(http.StatusNotFound)
+	if response.StatusCode != http.StatusOK {
+		rw.WriteHeader(response.StatusCode)
 		return
 	}
 
@@ -93,8 +94,4 @@ func decodeImageFromBody(body *io.ReadCloser) (*[]byte, error) {
 
 	b := buf.Bytes()
 	return &b, nil
-}
-
-func externalImageNotFound(response *http.Response) bool {
-	return response.StatusCode == http.StatusNotFound
 }
