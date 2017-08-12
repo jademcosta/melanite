@@ -7,8 +7,8 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-const http_protocol string = "http://"
-const https_protocol string = "https://"
+const httpProtocol string = "http://"
+const httpsProtocol string = "https://"
 
 type Config struct {
 	ImageSource string `yaml:"image_source"`
@@ -30,11 +30,12 @@ func New(rawConfig []byte) (Config, error) {
 }
 
 func valid(config Config) error {
-	if strings.HasPrefix(config.ImageSource, http_protocol) ||
-		strings.HasPrefix(config.ImageSource, https_protocol) ||
+	if strings.HasPrefix(config.ImageSource, httpProtocol) ||
+		strings.HasPrefix(config.ImageSource, httpsProtocol) ||
 		config.ImageSource == "" {
 		return nil
 	}
-	return fmt.Errorf("config: image_source should start with %s or %s",
-		http_protocol, https_protocol)
+	invalidImageSourceErrorMessage := "config: image_source should start with %s or %s"
+	return fmt.Errorf(invalidImageSourceErrorMessage,
+		httpProtocol, httpsProtocol)
 }
