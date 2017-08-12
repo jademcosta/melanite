@@ -31,8 +31,7 @@ func New(rawConfig []byte) (Config, error) {
 
 func valid(config Config) error {
 	if strings.HasPrefix(config.ImageSource, httpProtocol) ||
-		strings.HasPrefix(config.ImageSource, httpsProtocol) ||
-		config.ImageSource == "" {
+		strings.HasPrefix(config.ImageSource, httpsProtocol) {
 		return nil
 	}
 	invalidImageSourceErrorMessage := "config: image_source should start with %s or %s"

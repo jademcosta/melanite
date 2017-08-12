@@ -20,8 +20,6 @@ func TestConfigInitializerForValidImageSourceKey(t *testing.T) {
 	}{
 		{"full_correct_config.yaml", "http://example.com",
 			"the image source should be the equal"},
-		{"empty_config.yaml", "",
-			"the image source should be empty"},
 	}
 
 	for _, testCase := range imageSourceOnConfigTests {
@@ -49,6 +47,9 @@ func TestConfigInitializerForInvalidImageSourceKey(t *testing.T) {
 		testMessage          string
 	}{
 		{"incorrect_image_source_config.yaml",
+			"config: image_source should start with http:// or https://",
+			"Should return an error"},
+		{"empty_config.yaml",
 			"config: image_source should start with http:// or https://",
 			"Should return an error"},
 	}
