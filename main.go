@@ -20,27 +20,24 @@ const defaultPort = "8080"
 var defaultLogFormatter = &log.JSONFormatter{}
 
 func main() {
-	configFileContent, err := getConfigFileContent()
+	logger := buildLogger()
+
+	configuration, err := loadConfig()
 	if err != nil {
-		panic(err)
+		logger.Panic(err)
 	}
 
-	configuration, err := config.New(configFileContent)
-	if err != nil {
-		panic(err)
-	}
-
-	http.ListenAndServe(fmt.Sprintf(":%s", defaultPort), GetApp(defaultLogLevel, defaultLogFormatter, configuration))
+	logger.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", defaultPort),
+		GetApp(*configuration, logger)))
 }
 
-func GetApp(logLevel log.Level, logFormatter log.Formatter,
-	configuration config.Config) http.Handler {
+func GetApp(configuration config.Config, logger *log.Logger) http.Handler {
 
 	r := http.NewServeMux()
 	r.Handle("/", imagecontroller.New(configuration))
 
 	n := negroni.New(negroni.NewRecovery())
-	n.Use(negronilogrus.NewMiddlewareFromLogger(getLogger(logLevel, logFormatter),
+	n.Use(negronilogrus.NewMiddlewareFromLogger(logger,
 		"melanite"))
 
 	n.UseHandler(r)
@@ -67,9 +64,22 @@ func getConfigFileContent() ([]byte, error) {
 	return configContent, nil
 }
 
-func getLogger(logLevel log.Level, logFormatter log.Formatter) *log.Logger {
-	appLog := log.New()
-	appLog.SetLevel(logLevel)
-	appLog.Formatter = logFormatter
-	return appLog
+func loadConfig() (*config.Config, error) {
+	configFileContent, err := getConfigFileContent()
+	if err != nil {
+		return nil, err
+	}
+
+	configuration, err := config.New(configFileContent)
+	if err != nil {
+		return nil, err
+	}
+	return &configuration, nil
+}
+
+func buildLogger() *log.Logger {
+	logger := log.New()
+	logger.SetLevel(defaultLogLevel)
+	logger.Formatter = defaultLogFormatter
+	return logger
 }

@@ -38,7 +38,10 @@ func TestFakeExternalServerTestSuite(t *testing.T) {
 }
 
 func (suite *FakeExternalServerTestSuite) SetupTest() {
-	suite.subjectServer = httptest.NewServer(GetApp(log.PanicLevel, &log.TextFormatter{}, config.Config{ImageSource: "http://localhost:8081"}))
+	logger := log.New()
+	logger.SetLevel(log.FatalLevel)
+	suite.subjectServer = httptest.NewServer(
+		GetApp(config.Config{ImageSource: "http://localhost:8081"}, logger))
 }
 
 func (suite *FakeExternalServerTestSuite) TestAnswers404WhenImageNotFound() {
