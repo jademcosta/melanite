@@ -68,3 +68,58 @@ func TestConfigInitializerForInvalidImageSourceKey(t *testing.T) {
 			testCase.expectedErrorMessage, testCase.testMessage)
 	}
 }
+
+func TestConfigInitializerForValidPortKey(t *testing.T) {
+
+	var imageSourceOnConfigTests = []struct {
+		filename     string
+		expectedPort string
+		testMessage  string
+	}{
+		{"full_correct_config.yaml", "80", "the port should be the equal"},
+		{"empty_port_config.yaml", "", "the port should be the equal"},
+	}
+
+	for _, testCase := range imageSourceOnConfigTests {
+		configContent, err :=
+			ioutil.ReadFile(fmt.Sprintf("%s%s", configFixtureFilesFolder, testCase.filename))
+		if err != nil {
+			panic(err)
+		}
+
+		configuration, err := config.New(configContent)
+		if err != nil {
+			panic(err)
+		}
+
+		assert.Equal(t, testCase.expectedPort,
+			configuration.Port, testCase.testMessage)
+	}
+}
+
+func TestConfigInitializerForInvalidPortKey(t *testing.T) {
+
+	var imageSourceOnConfigTests = []struct {
+		filename             string
+		expectedErrorMessage string
+		testMessage          string
+	}{
+		{"incorrect_port_config.yaml",
+			"config: port should be an integer",
+			"Should return an error"},
+	}
+
+	for _, testCase := range imageSourceOnConfigTests {
+		configContent, err :=
+			ioutil.ReadFile(fmt.Sprintf("%s%s", configFixtureFilesFolder, testCase.filename))
+		if err != nil {
+			panic(err)
+		}
+
+		_, err = config.New(configContent)
+
+		assert.Error(t, err, testCase.testMessage)
+		assert.Equal(t, err.Error(),
+			testCase.expectedErrorMessage, testCase.testMessage)
+	}
+}

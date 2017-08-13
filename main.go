@@ -27,7 +27,14 @@ func main() {
 		logger.Panic(err)
 	}
 
-	logger.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", defaultPort),
+	var port string
+	if configuration.Port != "" {
+		port = configuration.Port
+	} else {
+		port = defaultPort
+	}
+
+	logger.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port),
 		GetApp(*configuration, logger)))
 }
 

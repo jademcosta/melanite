@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	yaml "gopkg.in/yaml.v2"
@@ -12,6 +13,7 @@ const httpsProtocol string = "https://"
 
 type Config struct {
 	ImageSource string `yaml:"image_source"`
+	Port        string `yaml:"port"`
 }
 
 func New(rawConfig []byte) (Config, error) {
@@ -30,11 +32,14 @@ func New(rawConfig []byte) (Config, error) {
 }
 
 func valid(config Config) error {
-	if strings.HasPrefix(config.ImageSource, httpProtocol) ||
-		strings.HasPrefix(config.ImageSource, httpsProtocol) {
-		return nil
+	if !strings.HasPrefix(config.ImageSource, httpProtocol) &&
+		!strings.HasPrefix(config.ImageSource, httpsProtocol) {
+
+		return fmt.Errorf("config: image_source should start with %s or %s",
+			httpProtocol, httpsProtocol)
 	}
-	invalidImageSourceErrorMessage := "config: image_source should start with %s or %s"
-	return fmt.Errorf(invalidImageSourceErrorMessage,
-		httpProtocol, httpsProtocol)
+	if _, err := strconv.Atoi(config.Port); config.Port != "" && err != nil {
+		return fmt.Errorf("config: port should be an integer")
+	}
+	return nil
 }
