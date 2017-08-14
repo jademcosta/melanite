@@ -59,7 +59,7 @@ func (controller *ImageController) ServeHTTP(rw http.ResponseWriter,
 		return
 	}
 
-	if output, ok := r.URL.Query()["o"]; ok && len(output) > 0 {
+	if output, ok := r.URL.Query()["out"]; ok && len(output) > 0 {
 		outputFormat := output[0]
 
 		imgAsBytes, err = converter.Convert(*imgAsBytes, outputFormat)
@@ -75,7 +75,7 @@ func (controller *ImageController) ServeHTTP(rw http.ResponseWriter,
 		}
 	}
 
-	if resizeParam, ok := r.URL.Query()["r"]; ok && len(resizeParam) > 0 {
+	if resizeParam, ok := r.URL.Query()["res"]; ok && len(resizeParam) > 0 {
 		resizeDimensions := resizeParam[0]
 
 		*imgAsBytes, err = resizer.Resize(*imgAsBytes, resizeDimensions)

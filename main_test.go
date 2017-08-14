@@ -107,7 +107,7 @@ func (suite *FakeExternalServerTestSuite) TestAnswers400WheNoUrlIsGiven() {
 
 func (suite *FakeExternalServerTestSuite) TestAnswers400WhenAskForUnsupportedConversionFormat() {
 	res, err := http.Get(fmt.Sprintf("%s/%s",
-		suite.subjectServer.URL, "park-view-XS.jpg?o=pngdas"))
+		suite.subjectServer.URL, "park-view-XS.jpg?out=pngdas"))
 	if err != nil {
 		panic(err)
 	}
@@ -124,7 +124,7 @@ func (suite *FakeExternalServerTestSuite) TestAnswers400WhenAskForUnsupportedCon
 
 func (suite *FakeExternalServerTestSuite) TestConvertJpgToPng() {
 	res, err := http.Get(fmt.Sprintf("%s/%s",
-		suite.subjectServer.URL, "park-view-XS.jpg?o=png"))
+		suite.subjectServer.URL, "park-view-XS.jpg?out=png"))
 	if err != nil {
 		panic(err)
 	}
@@ -142,7 +142,7 @@ func (suite *FakeExternalServerTestSuite) TestConvertJpgToPng() {
 
 func (suite *FakeExternalServerTestSuite) TestConvertPngToJpg() {
 	res, err := http.Get(fmt.Sprintf("%s/%s",
-		suite.subjectServer.URL, "park-view-XS.png?o=jpg"))
+		suite.subjectServer.URL, "park-view-XS.png?out=jpg"))
 	if err != nil {
 		panic(err)
 	}
@@ -160,7 +160,7 @@ func (suite *FakeExternalServerTestSuite) TestConvertPngToJpg() {
 
 func (suite *FakeExternalServerTestSuite) TestConvertPngToWebp() {
 	res, err := http.Get(fmt.Sprintf("%s/%s",
-		suite.subjectServer.URL, "park-view-XS.png?o=webp"))
+		suite.subjectServer.URL, "park-view-XS.png?out=webp"))
 	if err != nil {
 		panic(err)
 	}
@@ -178,7 +178,7 @@ func (suite *FakeExternalServerTestSuite) TestConvertPngToWebp() {
 
 func (suite *FakeExternalServerTestSuite) TestConvertPngToPng() {
 	res, err := http.Get(fmt.Sprintf("%s/%s",
-		suite.subjectServer.URL, "park-view-XS.png?o=png"))
+		suite.subjectServer.URL, "park-view-XS.png?out=png"))
 	if err != nil {
 		panic(err)
 	}
@@ -197,7 +197,7 @@ func (suite *FakeExternalServerTestSuite) TestConvertPngToPng() {
 func (suite *FakeExternalServerTestSuite) TestResize() {
 	//260x147
 	res, err := http.Get(fmt.Sprintf("%s/%s",
-		suite.subjectServer.URL, "park-view-XS.png?r=130x0"))
+		suite.subjectServer.URL, "park-view-XS.png?res=130x0"))
 	if err != nil {
 		panic(err)
 	}
@@ -223,7 +223,7 @@ func (suite *FakeExternalServerTestSuite) TestResize() {
 func (suite *FakeExternalServerTestSuite) TestEnlargement() {
 	//260x147
 	res, err := http.Get(fmt.Sprintf("%s/%s",
-		suite.subjectServer.URL, "park-view-XS.png?r=520x0"))
+		suite.subjectServer.URL, "park-view-XS.png?res=520x0"))
 	if err != nil {
 		panic(err)
 	}
