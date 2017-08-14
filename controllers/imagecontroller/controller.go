@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/jademcosta/melanite/config"
+	"github.com/jademcosta/melanite/imageaction"
 	"github.com/jademcosta/melanite/imageaction/converter"
 	"github.com/jademcosta/melanite/imageaction/resizer"
 	log "github.com/sirupsen/logrus"
@@ -60,15 +61,16 @@ func (controller *ImageController) ServeHTTP(rw http.ResponseWriter,
 
 	if output, ok := r.URL.Query()["o"]; ok && len(output) > 0 {
 		outputFormat := output[0]
-		if !converter.IsValidImageEncoding(outputFormat) {
-			rw.WriteHeader(http.StatusBadRequest)
-			return
-		}
 
 		imgAsBytes, err = converter.Convert(*imgAsBytes, outputFormat)
 		if err != nil {
 			logger.Errorf("Error when trying to convert image. Error: %s", err)
-			rw.WriteHeader(http.StatusInternalServerError)
+			switch err.(type) {
+			case imageaction.Error:
+				rw.WriteHeader(http.StatusBadRequest)
+			default:
+				rw.WriteHeader(http.StatusInternalServerError)
+			}
 			return
 		}
 	}
