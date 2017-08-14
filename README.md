@@ -7,24 +7,42 @@ Melanite is a very fast image converter and resizer. It is great to reduce bandw
 
 On the [test](https://github.com/jademcosta/melanite/tree/master/test/images) folder you have examples of images that equal, but in different formats, and can have a taste of the difference in size.
 
-If your site/app has high traffic, you'd be better using melanite behind a CDN. With this, you can safely run Melanite on a simple machine, and enjoy all the speed and savings :)
+If your site/app has high traffic, you'd be better using melanite behind a CDN. With this, you can safely run Melanite on a simple machine, and enjoy all the speed and savings.
 
-Below is a benchmark of Melanite on localhost (localfiles, localhost access on browser):
+Below is a benchmark of Melanite on localhost (localfiles, localhost access):
 
 
+More about the capabilities below.
 
+### Resizing images
+
+Assuming you have Melanite running on localhost:8080, and the image_source of it is `https://www.google.com.br`, to reduce the size of an image you can access the address `localhost:8080/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png?res=60x0`. This will produce an image with width of 60 pixels, and proportional height.
+
+If you want to enlarge the image, all you have to do is provide a higher size to the `res` query params, like `localhost:8080/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png?res=1000x0` .
+
+You can mix resizing and converting on the same image query, like this:
+localhost:8080/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png?res=60x0&out=webp
+
+### Converting images
+
+Assuming you have Melanite running on localhost:8080, and the image_source of it is `https://www.google.com.br`, to convert the format of an image you have go to address `localhost:8080/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png?out=webp` (it can be on your browser). This will produce a WEBP image.
+
+Have in mind that when you convert an image that has transparency (WEBP and PNG) to JPG, Melanite will fill the transparent pixels with black, as JPG does not supports transparency.
+
+Currently, Melanite knows how to convert to JPG, PNG and WEBP. You can mix resizing an converting on the same image query, like this:
+localhost:8080/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png?res=60x0&out=webp
 
 ## Deploying it
 
 Run `go build melanite`. Get the binary generated and puts it on a folder where you have a config file. You can get the `melanite_example_config.yaml` in this repository, and replace the `image_source` property with your images' server address. After that, you can visit `http://your_server_ip:8080/some_image_path.extension` and check if it works. If it's everything ok, check on the examples section what can you do with your images.
 
 ### Android support for WEBP
-Android doesn't suppport WEBP on all its versions. If you are using melanite as your images proxy, don't convert to WEBP on older versions of Android. Read more about it on these links:
+Android doesn't suppport WEBP on all its versions. If you are using Melanite as your images proxy, don't convert to WEBP on older versions of Android. Read more about it on these links:
 * https://developer.android.com/studio/write/convert-webp.html
 * https://developer.android.com/guide/topics/media/media-formats.html
 
 ### iOS support WEBP
-iOS seems to be starting to support WEBP, but melanite was not tested against it yet. If you tested it and it worked on iOS, please send a PR editing this part. I'm basing this assumption on this link:
+iOS seems to be starting to support WEBP, but Melanite was not tested against it yet. If you tested it and it worked on iOS, please send a PR editing this part. I'm basing this assumption on this link:
 * https://stackoverflow.com/questions/8672393/webp-image-format-on-ios
 
 
