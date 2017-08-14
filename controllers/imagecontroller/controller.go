@@ -8,8 +8,8 @@ import (
 	"strconv"
 
 	"github.com/jademcosta/melanite/config"
-	"github.com/jademcosta/melanite/converter"
-	"github.com/jademcosta/melanite/resizer"
+	"github.com/jademcosta/melanite/imageaction/converter"
+	"github.com/jademcosta/melanite/imageaction/resizer"
 	log "github.com/sirupsen/logrus"
 )
 

@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/jademcosta/melanite/converter"
+	"github.com/jademcosta/melanite/imageaction/converter"
 	"github.com/stretchr/testify/assert"
 )
 
-const testImagesFolder = "../test/images"
+const testImagesFolder = "../../test/images"
 
 func TestValidationWorksForImageEncodingsThatAreSupported(t *testing.T) {
 
