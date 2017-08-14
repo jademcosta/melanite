@@ -58,6 +58,8 @@ To add a new dependency, just run `govendor fetch PATH_TO_DEPENDENCY`.
 * [Feature] Allows the user to crop images. Allows the option "crop" when resizing (downsizing) images.  
 * [Feature] Allows color transformation to users (gray, sepia, etc).
 * [Feature] Allows smartcrop images. Based on face detection and feature detection.
+* [Code] Pass the resizer and converter with dependency injection to the controller. This will allow us to test it (controller) more.
+* [UX] Return 400 when the user tries an invalid resize param.
 
 ## Thanks
 A big thank for everybody involved into [libvips](https://github.com/jcupitt/libvips), and also the [bimg](https://github.com/h2non/bimg).
