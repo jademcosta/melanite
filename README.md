@@ -13,7 +13,7 @@ More about the capabilities below.
 
 ### Resizing images
 
-Assuming you have Melanite running on localhost:8080, and the image_source of it is `https://www.google.com.br`, to reduce the size of an image you can access the address `localhost:8080/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png?res=60x0`. This will produce an image with width of 60 pixels, and proportional height.
+Assuming you have Melanite running on localhost:8080, and the image_source of it is `https://www.google.com.br`, to reduce the size of an image you can access the address `localhost:8080/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png?res=60x0`. This will produce an image with width of 60 pixels, and proportional height. If you enforce width and height, melanite will fill the non-proportional dimension with alpha (webp,png) or black (jpg) background.
 
 If you want to enlarge the image, all you have to do is provide a higher size to the `res` query params, like `localhost:8080/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png?res=1000x0` .
 
@@ -54,10 +54,12 @@ Android doesn't suppport WEBP on all its versions. If you are using Melanite as 
 * https://developer.android.com/studio/write/convert-webp.html
 * https://developer.android.com/guide/topics/media/media-formats.html
 
-### iOS support WEBP
+### iOS support for WEBP
 iOS seems to be starting to support WEBP, but Melanite was not tested against it yet. If you tested it and it worked on iOS, please send a PR editing this part. I'm basing this assumption on this link:
 * https://stackoverflow.com/questions/8672393/webp-image-format-on-ios
 
+### Browsers support for WEBP
+Don't now about all the browsers, but Chrome is the one who currently supports webp for sure.
 
 ## Development
 
