@@ -34,6 +34,7 @@ func main() {
 		port = defaultPort
 	}
 
+	logger.Infof("Starting Melanite on port %s", port)
 	logger.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port),
 		GetApp(*configuration, logger)))
 }
