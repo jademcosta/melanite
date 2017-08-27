@@ -3,14 +3,11 @@ A server that helps converting images on the fly.
 
 ## Usage
 
-Melanite is a very fast image converter and resizer. It is great to reduce bandwith of images for your mobile apps by converting images to WEBP. If you're sending PNG images, Melanite is a must.
+Melanite is a very fast image converter and resizer. It is great to reduce bandwith of images for your mobile apps and website by converting images to WEBP (just an example). If you're sending PNG images, Melanite is a must.
 
-On the [test](https://github.com/jademcosta/melanite/tree/master/test/images) folder you have examples of images that equal, but in different formats, and can have a taste of the difference in size.
+On the [test](https://github.com/jademcosta/melanite/tree/master/test/images) folder you have examples of images that equal, but in different formats, and can have a taste of the difference in disk size between each format.
 
-If your site/app has high traffic, you'd be better using melanite behind a CDN. With this, you can safely run Melanite on a simple machine, and enjoy all the speed and savings.
-
-Below is a benchmark of Melanite on localhost (localfiles, localhost access):
-
+If your site/app has high traffic, you'd be better use melanite behind a CDN. With this, you can safely run Melanite on a simple machine, and enjoy all the speed and savings.
 
 More about the capabilities below.
 
@@ -32,9 +29,18 @@ Have in mind that when you convert an image that has transparency (WEBP and PNG)
 Currently, Melanite knows how to convert to JPG, PNG and WEBP. You can mix resizing an converting on the same image query, like this:
 localhost:8080/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png?res=60x0&out=webp
 
+### Benchmarks
+Melanite uses [libvips](https://github.com/jcupitt/libvips), and leverages its speed and low memory usage. You can check a libvips benchmark on their repository, [here](https://github.com/jcupitt/libvips/wiki/Speed-and-memory-use).
+
 ## Deploying it
 
-Run `go build melanite`. Get the binary generated and puts it on a folder where you have a config file. You can get the `melanite_example_config.yaml` in this repository, and replace the `image_source` property with your images' server address. After that, you can visit `http://your_server_ip:8080/some_image_path.extension` and check if it works. If it's everything ok, check on the examples section what can you do with your images.
+Run `go build melanite`. Get the binary generated and puts it on a folder where you have a config file. You can get the `melanite_example_config.yaml` in this repository, and replace the `image_source` property with your images' server address (WITHOUT THE TRAILING SLASH. The address should be http://example.com and not http://example.com/). After that, you can visit `http://your_server_ip:8080/some_image_path.extension` and check if it works. If it's everything ok, check on the examples section what can you do with your images.
+
+### Config file
+The config file can be given using the -c param, when running melanite, like `melanite -c /etc/melanite/melanite_config.yml`. A config file example can be found at the root of this repo. Below you'll find the valid entries of config file.
+
+* *image_source* [required]: The url of the image server. Should not end with a slash. The url http://example.com is valid, while http://example.com/ is invalid.
+* *port* [not-required]: The port where melanite will run. If no value is given, it will default to port 8080.
 
 ### Android support for WEBP
 Android doesn't suppport WEBP on all its versions. If you are using Melanite as your images proxy, don't convert to WEBP on older versions of Android. Read more about it on these links:
@@ -78,6 +84,9 @@ To add a new dependency, just run `govendor fetch PATH_TO_DEPENDENCY`.
 * [Feature] Allows smartcrop images. Based on face detection and feature detection.
 * [Code] Pass the resizer and converter with dependency injection to the controller. This will allow us to test it (controller) more.
 * [UX] Return 400 when the user tries an invalid resize param.
+* [UX] Return errors on a header, to help debugging.
+* [Docs] Add a benchmark of melanite running on localhost (conversion speed benchmark).
+
 
 ## Thanks
-A big thank for everybody involved into [libvips](https://github.com/jcupitt/libvips), and also the [bimg](https://github.com/h2non/bimg).
+A big thank you for all the people involved into [libvips](https://github.com/jcupitt/libvips), and also the [bimg](https://github.com/h2non/bimg).
