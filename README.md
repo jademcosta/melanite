@@ -75,6 +75,7 @@ This project is using [govendor](https://github.com/kardianos/govendor) to manag
 To add a new dependency, just run `govendor fetch PATH_TO_DEPENDENCY`.
 
 ### Future work
+Non oreded future work:
 * [Security] Add security header to config: If the header does not match with the request, it gets denied.
 * [Perf] Pass the image as a pointer inside the controller. This will improve GC and memory.
 * [UX-Perf] Add ETags on each image, and allow the server to respond 304 - Nothing changed.
