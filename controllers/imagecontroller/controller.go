@@ -14,6 +14,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+const urlQueryParamKeyOutput string = "out"
+const urlQueryParamKeyResize string = "res"
+
+const responseHeaderContentLength string = "Content-Length"
+const responseHeaderContentType string = "Content-Type"
+
 type ImageController struct {
 	config config.Config
 	logger *log.Logger
@@ -59,7 +65,7 @@ func (controller *ImageController) ServeHTTP(rw http.ResponseWriter,
 		return
 	}
 
-	if output, ok := r.URL.Query()["out"]; ok && len(output) > 0 {
+	if output, ok := r.URL.Query()[urlQueryParamKeyOutput]; ok && len(output) > 0 {
 		outputFormat := output[0]
 
 		imgAsBytes, err = converter.Convert(*imgAsBytes, outputFormat)
@@ -75,7 +81,7 @@ func (controller *ImageController) ServeHTTP(rw http.ResponseWriter,
 		}
 	}
 
-	if resizeParam, ok := r.URL.Query()["res"]; ok && len(resizeParam) > 0 {
+	if resizeParam, ok := r.URL.Query()[urlQueryParamKeyResize]; ok && len(resizeParam) > 0 {
 		resizeDimensions := resizeParam[0]
 
 		*imgAsBytes, err = resizer.Resize(*imgAsBytes, resizeDimensions)
@@ -86,8 +92,8 @@ func (controller *ImageController) ServeHTTP(rw http.ResponseWriter,
 		}
 	}
 
-	rw.Header().Add("Content-Length", strconv.Itoa(len(*imgAsBytes)))
-	rw.Header().Add("Content-Type", http.DetectContentType(*imgAsBytes))
+	rw.Header().Add(responseHeaderContentLength, strconv.Itoa(len(*imgAsBytes)))
+	rw.Header().Add(responseHeaderContentType, http.DetectContentType(*imgAsBytes))
 	rw.Write(*imgAsBytes)
 }
 
