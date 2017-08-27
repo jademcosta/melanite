@@ -52,19 +52,16 @@ func GetApp(configuration config.Config, logger *log.Logger) http.Handler {
 	return n
 }
 
-func getConfigFileContent() ([]byte, error) {
-	var configFilePath = flag.String("c", "", "The path of the yaml config file")
-	flag.Parse()
-
-	if *configFilePath == "" {
+func getConfigFileContent(configFilePath string) ([]byte, error) {
+	if configFilePath == "" {
 		return nil, fmt.Errorf("Config file was not provided. Use -c FILENAME to provide one")
 	}
 
-	if _, err := os.Stat(*configFilePath); os.IsNotExist(err) {
-		return nil, fmt.Errorf("File %s does not exist", *configFilePath)
+	if _, err := os.Stat(configFilePath); os.IsNotExist(err) {
+		return nil, fmt.Errorf("File %s does not exist", configFilePath)
 	}
 
-	configContent, err := ioutil.ReadFile(*configFilePath)
+	configContent, err := ioutil.ReadFile(configFilePath)
 	if err != nil {
 		return nil, err
 	}
@@ -73,12 +70,16 @@ func getConfigFileContent() ([]byte, error) {
 }
 
 func loadConfig() (*config.Config, error) {
-	configFileContent, err := getConfigFileContent()
+	var configFilePath = flag.String("c", "", "The path of the yaml config file")
+	var imageSource = flag.String("s", "", "The url where melanite will get the images")
+	flag.Parse()
+
+	configFileContent, err := getConfigFileContent(*configFilePath)
 	if err != nil {
 		return nil, err
 	}
 
-	configuration, err := config.New(configFileContent)
+	configuration, err := config.New(configFileContent, *imageSource)
 	if err != nil {
 		return nil, err
 	}

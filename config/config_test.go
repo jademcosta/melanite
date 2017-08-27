@@ -29,7 +29,7 @@ func TestConfigInitializerForValidImageSourceKey(t *testing.T) {
 			panic(err)
 		}
 
-		configuration, err := config.New(configContent)
+		configuration, err := config.New(configContent, "")
 		if err != nil {
 			panic(err)
 		}
@@ -61,11 +61,44 @@ func TestConfigInitializerForInvalidImageSourceKey(t *testing.T) {
 			panic(err)
 		}
 
-		_, err = config.New(configContent)
+		_, err = config.New(configContent, "")
 
 		assert.Error(t, err, testCase.testMessage)
 		assert.Equal(t, err.Error(),
 			testCase.expectedErrorMessage, testCase.testMessage)
+	}
+}
+
+func TestConfigInitializerOverridesImageSource(t *testing.T) {
+
+	var imageSourceOnConfigTests = []struct {
+		filename            string
+		imgSourceFromArgs   string
+		expectedImageSource string
+		testMessage         string
+	}{
+		{"full_correct_config.yaml", "", "http://example.com",
+			"the image source should be the the one on the file"},
+		{"full_correct_config.yaml", "http://another.com", "http://another.com",
+			"the image source should be the the one on the second parameter"},
+		{"empty_config.yaml", "http://another.com", "http://another.com",
+			"the image source should be the the one on the second parameter"},
+	}
+
+	for _, testCase := range imageSourceOnConfigTests {
+		configContent, err :=
+			ioutil.ReadFile(fmt.Sprintf("%s%s", configFixtureFilesFolder, testCase.filename))
+		if err != nil {
+			panic(err)
+		}
+
+		configuration, err := config.New(configContent, testCase.imgSourceFromArgs)
+		if err != nil {
+			panic(err)
+		}
+
+		assert.Equal(t, testCase.expectedImageSource,
+			configuration.ImageSource, testCase.testMessage)
 	}
 }
 
@@ -87,7 +120,7 @@ func TestConfigInitializerForValidPortKey(t *testing.T) {
 			panic(err)
 		}
 
-		configuration, err := config.New(configContent)
+		configuration, err := config.New(configContent, "")
 		if err != nil {
 			panic(err)
 		}
@@ -116,7 +149,7 @@ func TestConfigInitializerForInvalidPortKey(t *testing.T) {
 			panic(err)
 		}
 
-		_, err = config.New(configContent)
+		_, err = config.New(configContent, "")
 
 		assert.Error(t, err, testCase.testMessage)
 		assert.Equal(t, err.Error(),

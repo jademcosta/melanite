@@ -16,12 +16,16 @@ type Config struct {
 	Port        string `yaml:"port"`
 }
 
-func New(rawConfig []byte) (Config, error) {
+func New(rawConfig []byte, overrideImageSource string) (Config, error) {
 	config := &Config{}
 
 	err := yaml.Unmarshal(rawConfig, config)
 	if err != nil {
 		return *config, err
+	}
+
+	if overrideImageSource != "" {
+		config.ImageSource = overrideImageSource
 	}
 
 	if err = valid(*config); err != nil {
