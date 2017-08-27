@@ -1,13 +1,11 @@
 package converter
 
-import "github.com/h2non/bimg"
+import (
+	"fmt"
 
-func IsValidImageEncoding(encoding string) bool {
-	if encoding == "jpg" || encoding == "png" || encoding == "webp" {
-		return true
-	}
-	return false
-}
+	"github.com/h2non/bimg"
+	"github.com/jademcosta/melanite/imageaction"
+)
 
 func Convert(imgAsBytes []byte, outputFormat string) (*[]byte, error) {
 
@@ -20,6 +18,9 @@ func Convert(imgAsBytes []byte, outputFormat string) (*[]byte, error) {
 		imgFormat = bimg.JPEG
 	case "webp":
 		imgFormat = bimg.WEBP
+	default:
+		return nil, imageaction.Error{
+			Message: fmt.Sprintf("converter: invalid output format: %s", outputFormat)}
 	}
 
 	bts, err := bimg.Resize(imgAsBytes, bimg.Options{Type: imgFormat})

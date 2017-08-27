@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/jademcosta/melanite/converter"
+	"github.com/jademcosta/melanite/imageaction/converter"
 	"github.com/stretchr/testify/assert"
 )
 
-const testImagesFolder = "../test/images"
+const testImagesFolder = "../../test/images"
 
 func TestValidationWorksForImageEncodingsThatAreSupported(t *testing.T) {
 
@@ -18,8 +18,6 @@ func TestValidationWorksForImageEncodingsThatAreSupported(t *testing.T) {
 		format         string
 		expectedResult bool
 	}{
-		{"png", true},
-		{"jpg", true},
 		{"", false},
 		{"jpeg", false},
 		{"gif", false},
@@ -27,10 +25,14 @@ func TestValidationWorksForImageEncodingsThatAreSupported(t *testing.T) {
 		{"svg", false},
 	}
 
+	diskImage, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", testImagesFolder, "park-view-XXS.jpg"))
+	if err != nil {
+		panic(err)
+	}
+
 	for _, sample := range imageEncodingValidationTests {
-		assert.Equal(t,
-			sample.expectedResult, converter.IsValidImageEncoding(sample.format),
-			fmt.Sprintf("should be %v", sample.expectedResult))
+		_, err = converter.Convert(diskImage, sample.format)
+		assert.NotNil(t, err, "should return an error")
 	}
 }
 

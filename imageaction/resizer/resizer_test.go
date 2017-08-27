@@ -7,11 +7,11 @@ import (
 	"testing"
 
 	"github.com/h2non/bimg"
-	"github.com/jademcosta/melanite/resizer"
+	"github.com/jademcosta/melanite/imageaction/resizer"
 	"github.com/stretchr/testify/assert"
 )
 
-const testImagesFolder = "../test/images"
+const testImagesFolder = "../../test/images"
 
 func TestItCanEnlargeImages(t *testing.T) {
 	diskImage, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", testImagesFolder, "park-view-XS.png"))

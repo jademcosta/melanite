@@ -1,139 +1,94 @@
 package main
 
 import (
-	"bytes"
-	"io"
+	"flag"
+	"fmt"
+	"io/ioutil"
 	"net/http"
-	"net/url"
-	"strconv"
-	"strings"
+	"os"
 
-	"github.com/jademcosta/melanite/converter"
-	"github.com/jademcosta/melanite/resizer"
-	"github.com/julienschmidt/httprouter"
+	"github.com/jademcosta/melanite/config"
+	"github.com/jademcosta/melanite/controllers/imagecontroller"
 	negronilogrus "github.com/meatballhat/negroni-logrus"
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/negroni"
 )
 
 const defaultLogLevel = log.InfoLevel
+const defaultPort = "8080"
 
 var defaultLogFormatter = &log.JSONFormatter{}
 
 func main() {
-	http.ListenAndServe(":8080", GetApp(defaultLogLevel, defaultLogFormatter))
+	logger := buildLogger()
+
+	configuration, err := loadConfig()
+	if err != nil {
+		logger.Panic(err)
+	}
+
+	var port string
+	if configuration.Port != "" {
+		port = configuration.Port
+	} else {
+		port = defaultPort
+	}
+
+	logger.Infof("Starting Melanite on port %s", port)
+	logger.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port),
+		GetApp(*configuration, logger)))
 }
 
-func GetApp(logLevel log.Level, logFormatter log.Formatter) http.Handler {
-	r := httprouter.New()
-	r.GET("/*fileUri", FetcherFunc)
+func GetApp(configuration config.Config, logger *log.Logger) http.Handler {
+
+	r := http.NewServeMux()
+	r.Handle("/", imagecontroller.New(configuration, logger))
 
 	n := negroni.New(negroni.NewRecovery())
-	n.Use(negronilogrus.NewMiddlewareFromLogger(getLogger(logLevel, logFormatter),
+	n.Use(negronilogrus.NewMiddlewareFromLogger(logger,
 		"melanite"))
-	n.UseHandler(r)
 
+	n.UseHandler(r)
 	return n
 }
 
-func FetcherFunc(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	url := removePrefixSlash(p.ByName("fileUri"))
-
-	if isEmpty(url) || !isValidUrl(url) {
-		rw.WriteHeader(http.StatusBadRequest)
-		return
+func getConfigFileContent(configFilePath string) ([]byte, error) {
+	if configFilePath == "" {
+		return nil, fmt.Errorf("Config file was not provided. Use -c FILENAME to provide one")
 	}
 
-	response, err := getImage(&url)
-	if err != nil {
-		rw.WriteHeader(http.StatusInternalServerError)
-		return
+	if _, err := os.Stat(configFilePath); os.IsNotExist(err) {
+		return nil, fmt.Errorf("File %s does not exist", configFilePath)
 	}
 
-	if externalImageNotFound(response) {
-		rw.WriteHeader(http.StatusNotFound)
-		return
-	}
-
-	defer response.Body.Close()
-
-	imgAsBytes, err := decodeImageFromBody(&response.Body)
-	if err != nil {
-		rw.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	if output, ok := r.URL.Query()["o"]; ok && len(output) > 0 {
-		outputFormat := output[0]
-		if !converter.IsValidImageEncoding(outputFormat) {
-			rw.WriteHeader(http.StatusBadRequest)
-			return
-		}
-
-		imgAsBytes, err = converter.Convert(*imgAsBytes, outputFormat)
-		if err != nil {
-			rw.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-	}
-
-	if resizeParam, ok := r.URL.Query()["r"]; ok && len(resizeParam) > 0 {
-		resizeDimensions := resizeParam[0]
-
-		*imgAsBytes, err = resizer.Resize(*imgAsBytes, resizeDimensions)
-		if err != nil {
-			rw.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-	}
-
-	rw.Header().Add("Content-Length", strconv.Itoa(len(*imgAsBytes)))
-	rw.Header().Add("Content-Type", http.DetectContentType(*imgAsBytes))
-	rw.Write(*imgAsBytes)
-}
-
-func getLogger(logLevel log.Level, logFormatter log.Formatter) *log.Logger {
-	appLog := log.New()
-	appLog.SetLevel(logLevel)
-	appLog.Formatter = logFormatter
-	return appLog
-}
-
-func decodeImageFromBody(body *io.ReadCloser) (*[]byte, error) {
-	buf := &bytes.Buffer{}
-	_, err := buf.ReadFrom(*body)
-
+	configContent, err := ioutil.ReadFile(configFilePath)
 	if err != nil {
 		return nil, err
 	}
 
-	b := buf.Bytes()
-	return &b, nil
+	return configContent, nil
 }
 
-func externalImageNotFound(response *http.Response) bool {
-	return response.StatusCode == http.StatusNotFound
-}
+func loadConfig() (*config.Config, error) {
+	var configFilePath = flag.String("c", "", "The path of the yaml config file")
+	var imageSource = flag.String("s", "", "The url where melanite will get the images")
+	flag.Parse()
 
-func getImage(url *string) (*http.Response, error) {
-	return http.Get(*url)
-}
-
-func isEmpty(s string) bool {
-	if s == "" {
-		return true
-	}
-	return false
-}
-
-func isValidUrl(s string) bool {
-	_, err := url.ParseRequestURI(s)
+	configFileContent, err := getConfigFileContent(*configFilePath)
 	if err != nil {
-		return false
+		return nil, err
 	}
-	return true
+
+	configuration, err := config.New(configFileContent, *imageSource)
+	if err != nil {
+		return nil, err
+	}
+	return &configuration, nil
 }
 
-func removePrefixSlash(s string) string {
-	return strings.TrimPrefix(s, "/")
+func buildLogger() *log.Logger {
+	logger := log.New()
+	logger.SetLevel(defaultLogLevel)
+	logger.Formatter = defaultLogFormatter
+	return logger
 }
