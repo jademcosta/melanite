@@ -1,0 +1,66 @@
+- name: Add libvips required packages
+  apt: pkg={{ item }} state=latest force=yes update_cache=yes
+  with_items:
+    - build-essential
+    - libxml2-dev
+    - libfftw3-dev
+    - libmagickwand-dev
+    - libopenexr-dev
+    - liborc-0.4-0
+    - libgsf-1-dev
+    - libexpat1-dev
+    - libglib2.0-dev
+    - libjpeg-dev
+    - libtiff-dev
+    - zlib1g-dev
+    - liblcms2-dev
+    - libpng-dev
+    - libmagickcore-dev
+    - libfreetype6-dev
+    - libpango1.0-dev
+    - libfontconfig1-dev
+    - libice-dev
+    - gettext
+    - pkg-config
+    - libexif-gtk-dev
+    - python-all-dev
+    - python-dev
+    - libmatio-dev
+    - libcfitsio-dev
+    - libopenslide-dev
+    - libwebp-dev
+    - libgif-dev
+    - libpoppler-glib-dev
+    - librsvg2-dev
+    - automake
+    - libtool
+    - swig
+    - gtk-doc-tools
+    - gcc
+    - git
+    - libc6-dev
+    - make
+    - ca-certificates
+
+- name: Check if it is installed
+  command: ldconfig -p | grep libvips | wc -l
+  ignore_errors: yes
+  register: libvips_installed
+
+- name: Download and extract libvips
+  unarchive:
+    src: "{{ libvips_download_url }}"
+    dest: /tmp
+    remote_src: True
+  when: libvips_installed.stdout|int == 0
+
+- name: Install libvips
+  shell: ./configure --enable-debug=no --without-python && make && make install
+  args:
+    chdir: /tmp/vips-{{ libvips_version }}
+  when: libvips_installed.stdout|int == 0
+
+
+- name: Run ldconfig
+  shell: ldconfig
+  when: libvips_installed.stdout|int == 0

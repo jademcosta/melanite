@@ -1,0 +1,16 @@
+---
+- name: Fetch Melanite
+  command: "/usr/local/go/bin/go get -u {{ lib_import_url }}"
+  environment:
+    GOPATH: "{{ go_path }}"
+
+- name: Create melanite etc directory
+  file: path=/etc/melanite/ state=directory
+
+- name: Create melanite config file
+  template:
+    src: melanite_config.yml.j2
+    dest: "{{ melanite_config_file_path }}"
+    owner: root
+    group: root
+    mode: 0755

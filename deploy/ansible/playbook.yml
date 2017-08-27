@@ -1,0 +1,17 @@
+---
+- hosts: melanite
+  user: root
+  vars:
+    go_path: "/usr/local/golib"
+    melanite_config_file_path: "/etc/melanite/melanite_config.yml"
+  gather_facts: no
+  pre_tasks:
+    - name: 'install python2'
+      raw: sudo apt-get -y install python-simplejson
+
+  roles:
+    - libvips
+    - golang
+    - melanite_user
+    - melanite
+    - systemd
