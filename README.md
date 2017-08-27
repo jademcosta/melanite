@@ -39,8 +39,15 @@ Run `go build melanite`. Get the binary generated and puts it on a folder where 
 ### Config
 The config file can be given using the -c param, when running melanite, like `melanite -c /etc/melanite/melanite_config.yml`. A config file example can be found at the root of this repo (please note that in order to use it you'll need to replace some values!). Below you'll find the valid entries of config file.
 
-* *image_source* [required]: The url of the image server. Should not end with a slash. The url http://example.com is valid, while http://example.com/ is invalid.
-* *port* [not-required]: The port where melanite will run. If no value is given, it will default to port 8080.
+* *image_source* [required]: The url of the image server. Should not end with a slash. The url http://example.com is valid, while http://example.com/ is invalid. This config parameter can also be set with the command line option `-s`, like `melanite -s http://example.com -c path_to_config.yml`. But please note that you'll still need to provide a config file, and that the command line value will override the one you set on the config file.
+
+* *port* [not required]: The port where melanite will run. If no value is given, it will default to port 8080.
+
+### Command line options
+
+These are the options you provide when you run melanite. These will override values set on the config file, were applicable. These are the possibilities:
+* *-c* [required]: Path to the config file. Example: `melanite -c path_to_config.yml`
+* *-s* [not required]: URL where melanite will get the images. If set, will override the value set on the config file.
 
 ### Android support for WEBP
 Android doesn't suppport WEBP on all its versions. If you are using Melanite as your images proxy, don't convert to WEBP on older versions of Android. Read more about it on these links:
