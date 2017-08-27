@@ -1,0 +1,14 @@
+[Unit]
+Description=Melanite image proxy
+After=network.target
+
+[Service]
+Type=simple
+User=melanite
+Group=melanite
+WorkingDirectory={{ go_path }}/bin
+ExecStart={{ go_path }}/bin/melanite -c {{ melanite_config_file_path }}
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

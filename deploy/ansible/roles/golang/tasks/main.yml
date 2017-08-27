@@ -1,0 +1,31 @@
+---
+- name: Add Golang required packages
+  apt: pkg={{ item }} state=latest force=yes
+  with_items:
+    - build-essential
+    - gcc
+    - git
+    - libc6-dev
+    - make
+    - ca-certificates
+
+- name: Register the current Go version
+  command: /usr/local/go/bin/go version
+  ignore_errors: yes
+  register: go_version
+
+- name: Download the Go tarbal
+  get_url: url={{ go_download_url }}
+           dest=/tmp/{{ go_tarball }}
+  when: go_version|failed or go_version.stdout != go_version_target
+
+- name: Extract the Go tarball if it is not the desired version
+  command: tar -C /usr/local -xf /tmp/{{ go_tarball }}
+  when: go_version|failed or go_version.stdout != go_version_target
+
+- name: Create GOPATH bin dir
+  file: path={{ go_path }}/bin state=directory recurse=yes
+
+- name: Set GOPATH and add Go and GOPATH/bin to PATH for all users
+  template: src=go-path.sh
+            dest=/etc/profile.d

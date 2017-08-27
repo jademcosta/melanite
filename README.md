@@ -13,7 +13,7 @@ More about the capabilities below.
 
 ### Resizing images
 
-Assuming you have Melanite running on localhost:8080, and the image_source of it is `https://www.google.com.br`, to reduce the size of an image you can access the address `localhost:8080/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png?res=60x0`. This will produce an image with width of 60 pixels, and proportional height.
+Assuming you have Melanite running on localhost:8080, and the image_source of it is `https://www.google.com.br`, to reduce the size of an image you can access the address `localhost:8080/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png?res=60x0`. This will produce an image with width of 60 pixels, and proportional height. If you enforce width and height, melanite will fill the non-proportional dimension with alpha (webp,png) or black (jpg) background.
 
 If you want to enlarge the image, all you have to do is provide a higher size to the `res` query params, like `localhost:8080/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png?res=1000x0` .
 
@@ -33,8 +33,13 @@ localhost:8080/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png?res=6
 Melanite uses [libvips](https://github.com/jcupitt/libvips), and leverages its speed and low memory usage. You can check a libvips benchmark on their repository, [here](https://github.com/jcupitt/libvips/wiki/Speed-and-memory-use).
 
 ## Deploying it
+There are multiple available ways.
 
+### Manually
 Run `go build melanite`. Get the binary generated and puts it on a folder where you have a config file. You can get the `melanite_example_config.yaml` in this repository, *and replace* the `image_source` property with your images' server address (WITHOUT THE TRAILING SLASH. The address should be http://example.com and not http://example.com/). After that, you can visit `http://your_server_ip:8080/some_image_path.extension` and check if it works. If it's everything ok, check on the examples section what can you do with your images.
+
+### Ansible
+Check the README and ansible scripts in [deploy/ansible](https://github.com/jademcosta/melanite/tree/master/deploy/ansible).
 
 ### Config
 The config file can be given using the -c param, when running melanite, like `melanite -c /etc/melanite/melanite_config.yml`. A config file example can be found at the root of this repo (please note that in order to use it you'll need to replace some values!). Below you'll find the valid entries of config file.
@@ -54,10 +59,12 @@ Android doesn't suppport WEBP on all its versions. If you are using Melanite as 
 * https://developer.android.com/studio/write/convert-webp.html
 * https://developer.android.com/guide/topics/media/media-formats.html
 
-### iOS support WEBP
+### iOS support for WEBP
 iOS seems to be starting to support WEBP, but Melanite was not tested against it yet. If you tested it and it worked on iOS, please send a PR editing this part. I'm basing this assumption on this link:
 * https://stackoverflow.com/questions/8672393/webp-image-format-on-ios
 
+### Browsers support for WEBP
+Don't now about all the browsers, but Chrome is the one who currently supports webp for sure.
 
 ## Development
 

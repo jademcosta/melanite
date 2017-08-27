@@ -1,0 +1,1 @@
+libvips_download_url: "https://github.com/jcupitt/libvips/releases/download/v{{ libvips_version }}/vips-{{ libvips_version }}.tar.gz"

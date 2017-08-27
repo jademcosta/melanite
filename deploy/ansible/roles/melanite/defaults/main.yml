@@ -1,0 +1,3 @@
+---
+lib_import_url: "github.com/jademcosta/melanite"
+image_source_url: "<REPLACE_THIS_IN_ANSIBLE_MELANITE_ROLE>"
