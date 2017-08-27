@@ -34,10 +34,10 @@ Melanite uses [libvips](https://github.com/jcupitt/libvips), and leverages its s
 
 ## Deploying it
 
-Run `go build melanite`. Get the binary generated and puts it on a folder where you have a config file. You can get the `melanite_example_config.yaml` in this repository, and replace the `image_source` property with your images' server address (WITHOUT THE TRAILING SLASH. The address should be http://example.com and not http://example.com/). After that, you can visit `http://your_server_ip:8080/some_image_path.extension` and check if it works. If it's everything ok, check on the examples section what can you do with your images.
+Run `go build melanite`. Get the binary generated and puts it on a folder where you have a config file. You can get the `melanite_example_config.yaml` in this repository, *and replace* the `image_source` property with your images' server address (WITHOUT THE TRAILING SLASH. The address should be http://example.com and not http://example.com/). After that, you can visit `http://your_server_ip:8080/some_image_path.extension` and check if it works. If it's everything ok, check on the examples section what can you do with your images.
 
-### Config file
-The config file can be given using the -c param, when running melanite, like `melanite -c /etc/melanite/melanite_config.yml`. A config file example can be found at the root of this repo. Below you'll find the valid entries of config file.
+### Config
+The config file can be given using the -c param, when running melanite, like `melanite -c /etc/melanite/melanite_config.yml`. A config file example can be found at the root of this repo (please note that in order to use it you'll need to replace some values!). Below you'll find the valid entries of config file.
 
 * *image_source* [required]: The url of the image server. Should not end with a slash. The url http://example.com is valid, while http://example.com/ is invalid.
 * *port* [not-required]: The port where melanite will run. If no value is given, it will default to port 8080.
