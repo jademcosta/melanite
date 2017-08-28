@@ -35,11 +35,15 @@ Melanite uses [libvips](https://github.com/jcupitt/libvips), and leverages its s
 ## Deploying it
 There are multiple available ways.
 
-### Manually
-Run `go build melanite`. Get the binary generated and puts it on a folder where you have a config file. Now, run `MELANITE_CONF_IMAGE_SOURCE=http://your_image_server.com` (**WITHOUT THE TRAILING SLASH**! The address should be http://your_image_server.com and not http://your_image_server_ip.com/). After that, you can visit `http://your_image_server_ip:8080/some_image_path.extension` and check if it works. If it's everything ok, check on the examples section what can you do with your images.
+### Docker
+Check the [Dockerfile](https://github.com/jademcosta/melanite/blob/master/deploy/docker/Dockerfile) at this repo. If you want the built image, just run `docker run -i --rm -p 8080:8080 -e "MELANITE_CONF_IMAGE_SOURCE=http://YOU_IMAGE_SERVER_ADDRESS" --name melanite01 jademcosta/melanite`
 
 ### Ansible
 Check the README and ansible scripts in [deploy/ansible](https://github.com/jademcosta/melanite/tree/master/deploy/ansible).
+
+### Manually
+Run `go build melanite`. Get the binary generated and puts it on a folder where you have a config file. Now, run `MELANITE_CONF_IMAGE_SOURCE=http://your_image_server.com` (**WITHOUT THE TRAILING SLASH**! The address should be http://your_image_server.com and not http://your_image_server_ip.com/). After that, you can visit `http://your_image_server_ip:8080/some_image_path.extension` and check if it works. If it's everything ok, check on the examples section what can you do with your images.
+
 
 ### Necessary configuration
 The configuration can be done in two ways. One with Environment variables and the other with a config file. They can be even mixed (although you must agree that this will make things really difficult to debug if something goes wrong). The values set in env vars have high priority (will replace) than those in config file.

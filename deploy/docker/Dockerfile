@@ -1,5 +1,6 @@
 FROM ubuntu:16.04
-LABEL maintainer="jademcosta@gmail.com"
+LABEL maintainer="jademcosta@gmail.com" \
+      version="1.1"
 
 ENV LIBVIPS_VERSION 8.5.7
 
@@ -42,7 +43,5 @@ RUN go get -u github.com/jademcosta/melanite
 
 RUN mkdir -p /etc/melanite
 
-COPY ./melanite_config.yml /etc/melanite/melanite_config.yml
-
 EXPOSE 8080
-ENTRYPOINT ["/go/bin/melanite", "-c", "/etc/melanite/melanite_config.yml"]
+ENTRYPOINT ["/go/bin/melanite"]
