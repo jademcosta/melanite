@@ -2,11 +2,14 @@ package config
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 
 	yaml "gopkg.in/yaml.v2"
 )
+
+const EnvVarKeyImageSource string = "MELANITE_CONF_IMAGE_SOURCE"
 
 const httpProtocol string = "http://"
 const httpsProtocol string = "https://"
@@ -16,23 +19,43 @@ type Config struct {
 	Port        string `yaml:"port"`
 }
 
-func New(rawConfig []byte, overrideImageSource string) (Config, error) {
-	config := &Config{}
+func New(rawConfig []byte) (Config, error) {
 
-	err := yaml.Unmarshal(rawConfig, config)
+	configFromEnv := getConfigValuesFromEnv()
+
+	config, err := parseConfigFromString(rawConfig, &Config{})
 	if err != nil {
-		return *config, err
+		return config, err
 	}
 
-	if overrideImageSource != "" {
-		config.ImageSource = overrideImageSource
+	config = mergeConfigs(config, configFromEnv)
+
+	if err = valid(config); err != nil {
+		return config, err
 	}
 
-	if err = valid(*config); err != nil {
-		return *config, err
-	}
+	return config, nil
+}
 
-	return *config, nil
+func parseConfigFromString(rawConfig []byte, config *Config) (Config, error) {
+	err := yaml.Unmarshal(rawConfig, config)
+	return *config, err
+}
+
+func getConfigValuesFromEnv() Config {
+	config := Config{}
+
+	if imageSource, ok := os.LookupEnv(EnvVarKeyImageSource); ok {
+		config.ImageSource = imageSource
+	}
+	return config
+}
+
+func mergeConfigs(lowPriorityConfig, highPriorityConfig Config) Config {
+	if highPriorityConfig.ImageSource != "" {
+		lowPriorityConfig.ImageSource = highPriorityConfig.ImageSource
+	}
+	return lowPriorityConfig
 }
 
 func valid(config Config) error {
