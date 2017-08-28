@@ -36,23 +36,24 @@ Melanite uses [libvips](https://github.com/jcupitt/libvips), and leverages its s
 There are multiple available ways.
 
 ### Manually
-Run `go build melanite`. Get the binary generated and puts it on a folder where you have a config file. You can get the `melanite_example_config.yaml` in this repository, *and replace* the `image_source` property with your images' server address (WITHOUT THE TRAILING SLASH. The address should be http://example.com and not http://example.com/). After that, you can visit `http://your_server_ip:8080/some_image_path.extension` and check if it works. If it's everything ok, check on the examples section what can you do with your images.
+Run `go build melanite`. Get the binary generated and puts it on a folder where you have a config file. Now, run `MELANITE_CONF_IMAGE_SOURCE=http://your_image_server.com` (**WITHOUT THE TRAILING SLASH**! The address should be http://your_image_server.com and not http://your_image_server_ip.com/). After that, you can visit `http://your_image_server_ip:8080/some_image_path.extension` and check if it works. If it's everything ok, check on the examples section what can you do with your images.
 
 ### Ansible
 Check the README and ansible scripts in [deploy/ansible](https://github.com/jademcosta/melanite/tree/master/deploy/ansible).
 
-### Config
-The config file can be given using the -c param, when running melanite, like `melanite -c /etc/melanite/melanite_config.yml`. A config file example can be found at the root of this repo (please note that in order to use it you'll need to replace some values!). Below you'll find the valid entries of config file.
+### Necessary configuration
+The configuration can be done in two ways. One with Environment variables and the other with a config file. They can be even mixed (although you must agree that this will make things really difficult to debug if something goes wrong). The values set in env vars have high priority (will replace) than those in config file.
 
-* *image_source* [required]: The url of the image server. Should not end with a slash. The url http://example.com is valid, while http://example.com/ is invalid. This config parameter can also be set with the command line option `-s`, like `melanite -s http://example.com -c path_to_config.yml`. But please note that you'll still need to provide a config file, and that the command line value will override the one you set on the config file.
+The config file can be given using the -c param, when running melanite, like `melanite -c /etc/melanite/melanite_config.yml`. A config file example can be found at the root of this repo (please note that in order to use it you'll need to replace some values!). Below you'll find the valid entries of config file and for envVars.
 
-* *port* [not required]: The port where melanite will run. If no value is given, it will default to port 8080.
+* **Image source** [required]: in config file is key: **image_source**, in envVar is **MELANITE_CONF_IMAGE_SOURCE**: The url of the image server. Should not end with a slash. The url http://example.com is valid, while http://example.com/ is invalid.
+
+* **Port** [not required]: In config file is key: **port**: The port where melanite will run. If no value is given, it will default to port 8080.
 
 ### Command line options
 
 These are the options you provide when you run melanite. These will override values set on the config file, were applicable. These are the possibilities:
-* *-c* [required]: Path to the config file. Example: `melanite -c path_to_config.yml`
-* *-s* [not required]: URL where melanite will get the images. If set, will override the value set on the config file.
+* **-c** [not required]: Path to the config file. Example: `melanite -c path_to_config.yml`
 
 ### Android support for WEBP
 Android doesn't suppport WEBP on all its versions. If you are using Melanite as your images proxy, don't convert to WEBP on older versions of Android. Read more about it on these links:
@@ -88,8 +89,8 @@ Non oreded future work:
 * [UX-Perf] Add ETags on each image, and allow the server to respond 304 - Nothing changed.
 * [UX] Add optional Prometheus endpoint to monitoring.
 * [Monit] Add middleware that inserts a X-Request-Id header if not existent. This will help debugging and loggers.
-* [UX] Allow the level setting of the logger through config file. This is to disable log for those who don't care about it.
-* [UX-Perf] Allows to set a max-age cache number on config file.
+* [UX] Allow the level setting of the logger through config. This is to disable log for those who don't care about it.
+* [UX-Perf] Allows to set a max-age cache number on config.
 * [Perf] If more than one request arrives for the same image, adds a chanel, so that only 1 GET is done to the upstream.
 * [Feature] Adds to config the option to store generated files on disk.
 * [Feature] Adds to config the option to store generated files on memory (LRU cache with limited size).
