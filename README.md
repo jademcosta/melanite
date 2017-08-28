@@ -105,3 +105,6 @@ Non oreded future work:
 
 ## Thanks
 A big thank you for all the people involved into [libvips](https://github.com/jcupitt/libvips), and also the [bimg](https://github.com/h2non/bimg).
+
+## License
+MIT- Jade Costa
