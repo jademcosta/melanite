@@ -5,7 +5,9 @@ A server that helps converting images on the fly.
 
 Melanite is a very fast image converter and resizer. It is great to reduce bandwith of images for your mobile apps and website by converting images to WEBP (just an example). If you're sending PNG images, Melanite is a must.
 
-On the [test](https://github.com/jademcosta/melanite/tree/master/test/images) folder you have examples of images that equal, but in different formats, and can have a taste of the difference in disk size between each format.
+If you don't want to read the whole doc and want to test it now (and have docker installed), run `docker run -i --rm -p 8080:8080 -e "MELANITE_CONF_IMAGE_SOURCE=https://raw.githubusercontent.com" --name melanite01 jademcosta/melanite` and then access in your browser: *localhost:8080/jademcosta/melanite/master/test/images/park-view-L.jpg?out=png&res=500x0*. That's it. you just resize a JPEG image and converted it to PNG.
+
+On the [test](https://github.com/jademcosta/melanite/tree/master/test/images) folder you have examples of images that equal, but in different formats, and can have a taste of the difference in disk size between each format, if you want a taste of image sizes related to their format.
 
 If your site/app has high traffic, you'd be better use melanite behind a CDN. With this, you can safely run Melanite on a simple machine, and enjoy all the speed and savings.
 
