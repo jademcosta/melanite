@@ -88,6 +88,9 @@ Run all tests with the command `go test $(go list ./... | grep -v /vendor/)`
 This project is using [govendor](https://github.com/kardianos/govendor) to manage dependencies.
 To add a new dependency, just run `govendor fetch PATH_TO_DEPENDENCY`.
 
+### Dev Environment
+We have a Dockerfile that can be used as dev environment, if libvips is not available on host machine. After building the image (DOCKER_IMAGE_NAME on following command), run it with `docker run -it -v `pwd`:$GOPATH/src/github.com/jademcosta/melanite -e "MELANITE_CONF_IMAGE_SOURCE=IMAGE_SOURCE_URL" -p 8080:8080 --rm  --name melanite-dev DOCKER_IMAGE_NAME /bin/bash`.
+
 ### Future work
 Non oreded future work:
 * [Security] Add security header to config: If the header does not match with the request, it gets denied.
