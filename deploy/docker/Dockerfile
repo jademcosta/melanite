@@ -2,8 +2,6 @@ FROM ubuntu:16.04
 LABEL maintainer="jademcosta@gmail.com" \
       version="1.1"
 
-ENV LIBVIPS_VERSION 8.5.7
-
 RUN apt-get update && \
   apt-get install -y build-essential libxml2-dev libfftw3-dev \
 	libmagickwand-dev libopenexr-dev liborc-0.4-0 \
@@ -15,6 +13,8 @@ RUN apt-get update && \
   libopenslide-dev libwebp-dev libgif-dev libpoppler-glib-dev librsvg2-dev \
   automake libtool swig gtk-doc-tools gcc git libc6-dev make \
   ca-certificates wget
+
+ENV LIBVIPS_VERSION 8.6.0
 
 RUN cd /tmp && \
   wget https://github.com/jcupitt/libvips/releases/download/v${LIBVIPS_VERSION}/vips-${LIBVIPS_VERSION}.tar.gz && \
@@ -28,7 +28,7 @@ RUN cd /tmp && \
   rm -rf vips-${LIBVIPS_VERSION} && \
   rm vips-${LIBVIPS_VERSION}.tar.gz
 
-ENV GO_VERSION 1.8.3
+ENV GO_VERSION 1.9.2
 
 RUN cd /tmp && \
   wget -O go${GO_VERSION}.tar.gz https://storage.googleapis.com/golang/go${GO_VERSION}.linux-amd64.tar.gz && \
