@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/jademcosta/melanite/config"
 	"github.com/jademcosta/melanite/imageaction"
@@ -98,7 +99,11 @@ func (controller *ImageController) ServeHTTP(rw http.ResponseWriter,
 }
 
 func getImage(url *string) (*http.Response, error) {
-	return http.Get(*url)
+	imageRequestTimeout := 30 * time.Second
+	client := http.Client{
+		Timeout: time.Duration(imageRequestTimeout),
+	}
+	return client.Get(*url)
 }
 
 func decodeImageFromBody(body *io.ReadCloser) (*[]byte, error) {
