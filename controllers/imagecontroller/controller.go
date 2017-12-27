@@ -21,9 +21,19 @@ const urlQueryParamKeyResize string = "res"
 const responseHeaderContentLength string = "Content-Length"
 const responseHeaderContentType string = "Content-Type"
 
+const imageRequestTimeout time.Duration = 30 * time.Second
+
+var httpClient http.Client
+
 type ImageController struct {
 	config config.Config
 	logger *log.Logger
+}
+
+func init() {
+	httpClient = http.Client{
+		Timeout: time.Duration(imageRequestTimeout),
+	}
 }
 
 func New(config config.Config, logger *log.Logger) *ImageController {
@@ -99,11 +109,14 @@ func (controller *ImageController) ServeHTTP(rw http.ResponseWriter,
 }
 
 func getImage(url *string) (*http.Response, error) {
-	imageRequestTimeout := 30 * time.Second
-	client := http.Client{
-		Timeout: time.Duration(imageRequestTimeout),
+	req, err := http.NewRequest("GET", *url, nil)
+	if err != nil {
+		return nil, err
 	}
-	return client.Get(*url)
+	// Avoid connections hanging open
+	req.Header.Set("Connection", "close")
+
+	return httpClient.Do(req)
 }
 
 func decodeImageFromBody(body *io.ReadCloser) (*[]byte, error) {
