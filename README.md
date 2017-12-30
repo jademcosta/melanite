@@ -38,7 +38,7 @@ Melanite uses [libvips](https://github.com/jcupitt/libvips), and leverages its s
 There are multiple available ways.
 
 ### Docker
-Check the [Dockerfile](https://github.com/jademcosta/melanite/blob/master/deploy/docker/Dockerfile) at this repo. If you want the built image, just run `docker run -i --rm -p 8080:8080 -e "MELANITE_CONF_IMAGE_SOURCE=http://YOU_IMAGE_SERVER_ADDRESS" --name melanite01 jademcosta/melanite`
+Check the [Dockerfile](https://github.com/jademcosta/melanite/blob/master/deploy/docker/Dockerfile) at this repo. If you want to use the previously built image, just run `docker run -i --rm -p 8080:8080 -e "MELANITE_CONF_IMAGE_SOURCE=http://YOU_IMAGE_SERVER_ADDRESS" --name melanite01 jademcosta/melanite`
 
 ### Ansible
 Check the README and ansible scripts in [deploy/ansible](https://github.com/jademcosta/melanite/tree/master/deploy/ansible).
