@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/jademcosta/melanite/config"
 	"github.com/jademcosta/melanite/controllers/imagecontroller"
@@ -34,9 +35,18 @@ func main() {
 		port = defaultPort
 	}
 
+	app := GetApp(*configuration, logger)
+
+	srv := &http.Server{
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 30 * time.Second,
+		IdleTimeout:  120 * time.Second,
+		Handler:      app,
+		Addr:         fmt.Sprintf(":%s", port),
+	}
+
 	logger.Infof("Starting Melanite on port %s", port)
-	logger.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port),
-		GetApp(*configuration, logger)))
+	logger.Fatal(srv.ListenAndServe())
 }
 
 func GetApp(configuration config.Config, logger *log.Logger) http.Handler {
