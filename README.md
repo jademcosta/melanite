@@ -111,6 +111,7 @@ Non oreded future work:
 * [UX] Return 400 when the user tries an invalid resize param.
 * [UX] Return errors on a header, to help debugging.
 * [Docs] Add a benchmark of melanite running on localhost (conversion speed benchmark).
+* [UX] Allow the config to set the timeout of connections
 
 
 ## Thanks
