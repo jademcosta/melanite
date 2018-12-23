@@ -60,14 +60,13 @@ func (controller *ImageController) ServeHTTP(rw http.ResponseWriter,
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK {
 		logger.Info("Image at %s answered %d", url, response.StatusCode)
 		rw.WriteHeader(response.StatusCode)
 		return
 	}
-
-	defer response.Body.Close()
 
 	imgAsBytes, err := decodeImageFromBody(&response.Body)
 	if err != nil {
